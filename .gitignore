@@ -13,6 +13,9 @@
 # production
 /build
 
+# environment variables
+.env.local
+
 # # flask app
 # /backend/__pycache__/
 # /backend/*.pyc
