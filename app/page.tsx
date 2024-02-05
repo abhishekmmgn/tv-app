@@ -13,11 +13,6 @@ export default async function Home() {
     <div>
       <HomeSplash data={popular?.results[Math.floor(Math.random() * 5)]} />
       <div className="py-6 space-y-6">
-        <CardGallery
-          title="What's Popular"
-          type="poster"
-          data={popular}
-        />
         <CardGalleryWrapper
           title="Now Playing"
           type="poster"

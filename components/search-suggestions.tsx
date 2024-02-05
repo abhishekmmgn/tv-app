@@ -25,7 +25,6 @@ export default function SearchSuggestions(props: { searchQuery: string }) {
 
     fetchSearchResults();
   }, [props.searchQuery]);
-
   return (
     <>
       {isLoading &&

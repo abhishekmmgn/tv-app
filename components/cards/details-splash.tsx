@@ -38,8 +38,12 @@ export default function DetailsSplash(props: PropsType) {
 
   useEffect(() => {
     globalThis.window.innerWidth > 640
-      ? setImageUrl(props.images?.backdrop_path)
-      : setImageUrl(props.images?.poster_path);
+      ? setImageUrl(
+          `https://image.tmdb.org/t/p/original${props.images?.backdrop_path}`
+        )
+      : setImageUrl(
+          `https://image.tmdb.org/t/p/w780${props.images?.poster_path}`
+        );
   }, [props.images?.backdrop_path, props.images?.poster_path]);
 
   async function handleAddToWatchlist(event: React.MouseEvent<HTMLElement>) {
@@ -73,12 +77,11 @@ export default function DetailsSplash(props: PropsType) {
   return (
     <div className="w-full relative aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary">
       <Image
-        src={`https://image.tmdb.org/t/p/original${imageUrl}`}
+        src={imageUrl}
         alt={`Poster of ${props?.title}`}
         fill
-        sizes="100vw"
-        loading="eager"
         priority
+        sizes="100vw"
         className="object-cover"
       />
       <div className="z-10 absolute bottom-0 inset-x-0 h-[70%] bg-gradient-to-b from-black/0 to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">

@@ -9,13 +9,17 @@ export default function HomeSplash(props: { data: any }) {
   const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
     globalThis.window.innerWidth > 640
-      ? setImageUrl(props.data?.backdrop_path)
-      : setImageUrl(props.data?.poster_path);
+      ? setImageUrl(
+          `https://image.tmdb.org/t/p/original${props.data?.backdrop_path}`
+        )
+      : setImageUrl(
+          `https://image.tmdb.org/t/p/w780${props.data?.poster_path}`
+        );
   }, [props.data?.backdrop_path, props.data?.poster_path]);
   return (
     <div className="relative w-full inset-x-0 aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-[110vh] bg-secondary">
       <Image
-        src={`https://image.tmdb.org/t/p/original${imageUrl}`}
+        src={imageUrl}
         alt={`Poster of ${props.data?.name || props.data?.title}`}
         fill
         loading="eager"

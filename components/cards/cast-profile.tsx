@@ -15,11 +15,11 @@ export default function CastProfile(props: PropsType) {
         <Image
           src={
             props.image !== null
-              ? `https://image.tmdb.org/t/p/original${props.image}`
+              ? `https://image.tmdb.org/t/p/w185${props.image}`
               : personIcon
           }
           fill
-          sizes="200px"
+          sizes="128px"
           alt={`Profile photo of ${props.name}`}
           className="object-cover rounded-full"
         />

@@ -14,13 +14,14 @@ export default function SearchSuggestionsCard(props: itemType) {
         <div className="flex gap-2 p-2 items-center justify-start">
           <Image
             src={
-              props.image !== null
-                ? `https://image.tmdb.org/t/p/original${props.image}`
+              props.image
+                ? `https://image.tmdb.org/t/p/w92${props.image}`
                 : noItemLandscape
             }
             width={160}
             height={90}
             alt={props.title}
+            sizes="64px"
             className="object-cover w-20 aspect-video bg-background/50 rounded-md border-2"
           />
           <div>

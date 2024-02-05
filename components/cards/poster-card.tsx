@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { isInWatchlist, addToWatchlist } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import handleCopyLink from "@/lib/handleCopyLink";
@@ -64,14 +64,9 @@ export default function PosterCard(props: itemType) {
       <Link href={link}>
         <div className="relative bg-secondary w-full aspect-[1/1.5] mb-2 shadow-sm group">
           <Image
-            src={
-              props.image !== null
-                ? `https://image.tmdb.org/t/p/original${props.image}`
-                : noItem
-            }
+            src={props.image ? props.image : noItem}
             fill
-            loading="eager"
-            sizes="(max-width: 768px) 232px, (max-width: 1024px) 256px, 280px"
+            sizes="(max-width: 1024px) 232px, 284px"
             alt={props.title}
           />
           <DropdownMenu>

@@ -53,14 +53,13 @@ export function SuggestionCard(props: suggestionProps) {
         </div>
         <Image
           src={
-            props.image !== null
-              ? `https://image.tmdb.org/t/p/original${props.image}`
+            props.image
+              ? `https://image.tmdb.org/t/p/w342${props.image}`
               : noItemLandscape
           }
           alt={props.title}
           fill
-          loading="eager"
-          sizes="(max-width 768px) 200px, (max-width: 1024px) 300px, 400px"
+          sizes="256px"
           className="rounded-xl"
         />
       </div>

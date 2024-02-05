@@ -16,13 +16,13 @@ export default function SeasonCard(props: PropsType) {
         <Image
           src={
             props.image !== null
-              ? `https://image.tmdb.org/t/p/original${props.image}`
+              ? `https://image.tmdb.org/t/p/w500${props.image}`
               : noItemLandscape
           }
           alt={`Poster of ${props.episode_number}`}
           fill
           loading="eager"
-          sizes="(max-width: 768px) 348px, (max-width: 1024px) 356px, 364px"
+          sizes="356px"
           className="object-cover rounded-md"
         />
       </div>
