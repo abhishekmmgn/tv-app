@@ -18,7 +18,7 @@ export async function generateMetadata({
     const res = await fetchTMDBData(`movie/${movieId}`);
 
     const { name, title, overview, tagline, backdrop_path, profile_path } = res;
-    const image = `https://image.tmdb.org/t/p/original${
+    const image = `https://image.tmdb.org/t/p/w300${
       backdrop_path || profile_path
     }`;
 
@@ -26,7 +26,7 @@ export async function generateMetadata({
       title: title || name,
       description: overview || tagline,
       openGraph: {
-        images: [image],
+        images: image,
       },
     };
   } catch {

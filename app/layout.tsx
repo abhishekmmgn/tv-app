@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     default: "TV App",
     template: "%s | TV App",
   },
+  openGraph: {
+    images: "https://utfs.io/f/6192feb6-5f78-4ea2-94df-f3acc2298145-cu5kob.jpg",
+  },
   description: "Get recommendations for your next TV show.",
   manifest: "/manifest.json",
   themeColor: "#000000",

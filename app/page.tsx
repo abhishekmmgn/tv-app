@@ -2,16 +2,16 @@ import HomeSplash from "@/components/cards/home-splash";
 import PersonalizedCard from "@/components/cards/personalized-card";
 import { requests, fetchTMDBData } from "@/lib/requests";
 import CardGalleryWrapper from "@/components/wrapper/card-gallery-wrapper";
-import CardGallery from "@/components/gallery/card-gallery";
 
 // export const revalidate = 30;
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const popular = await fetchTMDBData(requests.fetchTrendingToday);
+  const [first, second, third] = popular?.results;
   return (
     <div>
-      <HomeSplash data={popular?.results[Math.floor(Math.random() * 5)]} />
+      <HomeSplash data={first} />
       <div className="py-6 space-y-6">
         <CardGalleryWrapper
           title="Now Playing"
@@ -30,7 +30,7 @@ export default async function Home() {
         />
         <div className="px-5 md:px-8 xl:px-12">
           <PersonalizedCard
-            data={popular.results[Math.floor(Math.random() * 10) + 5]}
+            data={second}
           />
         </div>
         <CardGalleryWrapper
@@ -60,7 +60,7 @@ export default async function Home() {
         />
         <div className="px-5 md:px-8 xl:px-12">
           <PersonalizedCard
-            data={popular.results[Math.floor(Math.random() * 15) + 5]}
+            data={third}
           />
         </div>
       </div>
