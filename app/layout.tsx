@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     images: "https://utfs.io/f/6192feb6-5f78-4ea2-94df-f3acc2298145-cu5kob.jpg",
+    title: "TV App",
+    description: "Get recommendations for your next TV show.",
+    url: "https://tv-app-beta.vercel.app",
+    siteName: "TV App",
+    locale: "en_US",
+    type: "website",
+    
   },
   description: "Get recommendations for your next TV show.",
   manifest: "/manifest.json",

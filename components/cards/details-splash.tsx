@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { UserAuth } from "@/providers/auth-provider";
 import handleCopyLink from "@/lib/handleCopyLink";
 import { useState, useEffect } from "react";
+import usePerfectImage from "@/lib/usePerfectImage";
 
 type PropsType = {
   id: number;
@@ -21,7 +22,6 @@ type PropsType = {
 export default function DetailsSplash(props: PropsType) {
   const [watched, setWatched] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
   const { user } = UserAuth();
 
   const link = props.isAShow
@@ -35,16 +35,6 @@ export default function DetailsSplash(props: PropsType) {
       });
     }
   }, [user, props.id]);
-
-  useEffect(() => {
-    globalThis.window.innerWidth > 640
-      ? setImageUrl(
-          `https://image.tmdb.org/t/p/original${props.images?.backdrop_path}`
-        )
-      : setImageUrl(
-          `https://image.tmdb.org/t/p/w780${props.images?.poster_path}`
-        );
-  }, [props.images?.backdrop_path, props.images?.poster_path]);
 
   async function handleAddToWatchlist(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
@@ -74,10 +64,14 @@ export default function DetailsSplash(props: PropsType) {
     setDisabled(false);
   };
 
+  console.log("Runs.");
   return (
     <div className="w-full relative aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary">
       <Image
-        src={imageUrl}
+        src={usePerfectImage(
+          props.images?.poster_path,
+          props.images?.backdrop_path
+        )}
         alt={`Poster of ${props?.title}`}
         fill
         priority

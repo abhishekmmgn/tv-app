@@ -8,7 +8,7 @@ export default function VideoCardGallery(props: galleryType) {
   }
   return (
     <>
-      {data.map((item: any, index: number) => (
+      {data.slice(0, 5).map((item: any, index: number) => (
         <div key={index}>
           <VideoCard
             title={item.name}

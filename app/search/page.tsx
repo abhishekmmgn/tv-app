@@ -3,6 +3,8 @@ import SearchResults from "@/components/search-results";
 import SearchBar from "@/components/search-bar";
 import type { Metadata } from "next";
 
+export const revalidate = 300;
+
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };

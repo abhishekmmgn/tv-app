@@ -33,7 +33,9 @@
     "server": "^1.0.38",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
-    "use-debounce": "^10.0.0"
+    "use-debounce": "^10.0.0",
+    "usehooks-ts": "^3.0.2",
+    "vaul": "^0.9.0"
   },
   "devDependencies": {
     "@types/node": "^20",

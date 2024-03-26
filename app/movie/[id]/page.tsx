@@ -27,6 +27,12 @@ export async function generateMetadata({
       description: overview || tagline,
       openGraph: {
         images: image,
+        title: title || name,
+        description: overview || tagline,
+        url: `https://tv-app-beta.vercel.app/movie/${id}`,
+        siteName: "TV App",
+        locale: "en_US",
+        type: "website",
       },
     };
   } catch {

@@ -10,7 +10,7 @@ export default function Details({
   return (
     <div className="mx-5 md:mx-8 xl:mx-12 p-5 bg-secondary rounded-lg flex flex-col gap-5">
       <div>
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-xl font-semibold md:text-2xl">
           {details.title || details.name}
         </h1>
         <p className="mt-1 text-sm text-neutral-300 lg:w-1/3">

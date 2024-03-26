@@ -14,7 +14,7 @@ export default function VideoCard(props: PropsType) {
           title={props.title}
           allowFullScreen
           className="rounded-md"
-        ></iframe>
+        />
       </div>
       <h1 className="text-sm font-semibold line-clamp-1 mr-1">{props.title}</h1>
     </div>

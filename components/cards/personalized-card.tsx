@@ -3,23 +3,16 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import usePerfectImage from "@/lib/usePerfectImage";
 
 export default function PersonalizedCard(props: { data: any }) {
-  const [imageUrl, setImageUrl] = useState("");
-  useEffect(() => {
-    globalThis.window.innerWidth > 640
-      ? setImageUrl(
-          `https://image.tmdb.org/t/p/original${props.data?.backdrop_path}`
-        )
-      : setImageUrl(
-          `https://image.tmdb.org/t/p/w780${props.data?.poster_path}`
-        );
-  }, [props.data?.backdrop_path, props.data?.poster_path]);
   return (
     <div className="relative w-full aspect-[9/16] max-h-[90vh] sm:aspect-video bg-secondary rounded-md">
       <Image
-        src={imageUrl}
+        src={usePerfectImage(
+          props.data?.poster_path,
+          props.data?.backdrop_path
+        )}
         alt={`Poster of ${props.data?.name || props.data?.title}`}
         fill
         sizes="100vw"
