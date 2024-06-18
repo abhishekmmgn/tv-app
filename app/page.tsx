@@ -27,7 +27,7 @@ export default async function Home() {
           url={requests.fetchUpcoming}
         />
         <div className="px-5 md:px-8 xl:px-12">
-          <PersonalizedCard data={popular?.results[1]} />
+          <PersonalizedCard />
         </div>
         <CardGalleryWrapper
           title="Explore by Category"
@@ -55,7 +55,7 @@ export default async function Home() {
           url={requests.fetchHBO}
         />
         <div className="px-5 md:px-8 xl:px-12">
-          <PersonalizedCard data={popular?.results[2]} />
+          <PersonalizedCard />
         </div>
       </div>
     </>

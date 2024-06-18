@@ -61,7 +61,7 @@ export default function PosterCard(props: itemType) {
 
   return (
     <div className="w-[220px] md:w-[232px] lg:w-[256px] xl:w-[272px]">
-      <Link href={link}>
+      <Link href={link} scroll={true}>
         <div className="relative bg-secondary w-full aspect-[1/1.5] mb-2 shadow-sm group">
           <Image
             src={props.image ? props.image : noItem}

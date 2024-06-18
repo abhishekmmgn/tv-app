@@ -5,6 +5,7 @@ import { fetchTMDBData } from "@/lib/requests";
 import Seasons from "../seasons";
 import Link from "next/link";
 import Details from "../details";
+import MovieRecommendations from "../movie-recommendations";
 
 export default async function DetailsCard(props: {
   id: string;
@@ -58,10 +59,11 @@ export default async function DetailsCard(props: {
         <div className="px-5 md:px-8 xl:px-12">
           <Separator />
         </div>
-        <CardGalleryWrapper
-          title={`Recommendations for ${details.title || details.name} `}
-          type="poster"
-          url={`${item}/${props.id}/recommendations`}
+        <MovieRecommendations
+          title={details.title}
+          name={details.name}
+          id={props.id}
+          item={item}
         />
       </div>
     );
