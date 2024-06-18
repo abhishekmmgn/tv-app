@@ -7,6 +7,7 @@ import usePerfectImage from "@/lib/usePerfectImage";
 import { useEffect, useState } from "react";
 import { auth } from "@/firebase-config";
 import axios from "axios";
+import FadeInWrapper from "../fadin-wrapper";
 
 export default function PersonalizedCard() {
   const [data, setData] = useState<any>(null);
@@ -15,23 +16,26 @@ export default function PersonalizedCard() {
       const data = await axios(
         "http://localhost:5000/get-personalized-recommendation"
       );
-      console.log(data)
+      console.log(data);
       setData(data);
     }
-    console.log("Runs.")
+    console.log("Runs.");
     if (auth.currentUser) {
       getPersonalizedRecommendation();
     }
   }, [auth.currentUser]);
+
   return (
     <div className="relative w-full aspect-[9/16] max-h-[90vh] sm:aspect-video bg-secondary rounded-md">
-      <Image
-        src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
-        alt={`Poster of ${data?.name || data?.title}`}
-        fill
-        sizes="100vw"
-        className="object-cover rounded-md"
-      />
+      <FadeInWrapper>
+        <Image
+          src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
+          alt={`Poster of ${data?.name || data?.title}`}
+          fill
+          sizes="100vw"
+          className="object-cover rounded-md"
+        />
+      </FadeInWrapper>
       <div className="z-10 absolute bottom-0 inset-x-0 h-[75%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10 rounded-b-md">
         <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center line-clamp-1">
           {data?.name || data?.title}

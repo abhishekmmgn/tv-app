@@ -4,38 +4,25 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import usePerfectImage from "@/lib/usePerfectImage";
-import { motion } from "framer-motion";
+import FadeInWrapper from "../fadin-wrapper";
 
 export default function HomeSplash(props: { data: any }) {
-  let parent = {
-    show: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-  let stat = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1 },
-  };
   return (
     <div className="relative w-full inset-x-0 aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-[110vh] bg-secondary">
-      <motion.div variants={parent} initial="hidden" animate="show">
-        <motion.div variants={stat}>
-          <Image
-            src={usePerfectImage(
-              props.data?.poster_path,
-              props.data?.backdrop_path
-            )}
-            alt={`Poster of ${props.data?.name || props.data?.title}`}
-            fill
-            loading="eager"
-            sizes="100vw"
-            priority
-            className="object-cover"
-          />
-        </motion.div>
-      </motion.div>
+      <FadeInWrapper>
+        <Image
+          src={usePerfectImage(
+            props.data?.poster_path,
+            props.data?.backdrop_path
+          )}
+          alt={`Poster of ${props.data?.name || props.data?.title}`}
+          fill
+          loading="eager"
+          sizes="100vw"
+          priority
+          className="object-cover"
+        />
+      </FadeInWrapper>
       <div className="z-10 absolute bottom-0 inset-x-0 h-[50%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
         <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-1">
           {props.data?.name || props.data?.title}

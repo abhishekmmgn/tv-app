@@ -9,6 +9,7 @@ import { UserAuth } from "@/providers/auth-provider";
 import handleCopyLink from "@/lib/handleCopyLink";
 import { useState, useEffect } from "react";
 import usePerfectImage from "@/lib/usePerfectImage";
+import FadeInWrapper from "../fadin-wrapper";
 
 type PropsType = {
   id: number;
@@ -63,21 +64,34 @@ export default function DetailsSplash(props: PropsType) {
     }
     setDisabled(false);
   };
+  let parent = {
+    show: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+  let stat = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1 },
+  };
 
   console.log("Runs.");
   return (
     <div className="w-full relative aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary">
-      <Image
-        src={usePerfectImage(
-          props.images?.poster_path,
-          props.images?.backdrop_path
-        )}
-        alt={`Poster of ${props?.title}`}
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
+      <FadeInWrapper>
+        <Image
+          src={usePerfectImage(
+            props.images?.poster_path,
+            props.images?.backdrop_path
+          )}
+          alt={`Poster of ${props?.title}`}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      </FadeInWrapper>
       <div className="z-10 absolute bottom-0 inset-x-0 h-[70%] bg-gradient-to-b from-black/0 to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
         <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-2">
           {props.title}
