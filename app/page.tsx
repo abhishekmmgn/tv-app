@@ -7,6 +7,7 @@ export const revalidate = 300;
 
 export default async function Home() {
   const popular = await fetchTMDBData(requests.fetchTrendingToday);
+  console.log(popular?.results[1]);
   return (
     <>
       <HomeSplash data={popular?.results[0]} />
@@ -27,7 +28,7 @@ export default async function Home() {
           url={requests.fetchUpcoming}
         />
         <div className="px-5 md:px-8 xl:px-12">
-          <PersonalizedCard />
+          <PersonalizedCard data={popular?.results[1]} />
         </div>
         <CardGalleryWrapper
           title="Explore by Category"
@@ -55,7 +56,7 @@ export default async function Home() {
           url={requests.fetchHBO}
         />
         <div className="px-5 md:px-8 xl:px-12">
-          <PersonalizedCard />
+          <PersonalizedCard data={popular?.results[2]} />
         </div>
       </div>
     </>
