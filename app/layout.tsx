@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { AuthContextProvider } from "@/providers/auth-provider";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata: Metadata = {
   title: {
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Navbar />
           <main className="mt-14">{children}</main>
         </AuthContextProvider>
+        <Analytics />
       </body>
     </html>
   );
