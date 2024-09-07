@@ -45,7 +45,6 @@ export async function generateMetadata({
 export default function ShowDetails({ params: { id } }: Params) {
   const parts = id.split("-");
   const showId = parts.pop() || "";
-
   return (
     <>
       <DetailsCard id={showId.toString()} isAShow={true} />

@@ -12,12 +12,20 @@ export async function isInWatchlist(id: number, userId: string) {
   return false;
 }
 
-export async function addToWatchlist(id: number, name: string, userId: string) {
+export async function addToWatchlist(
+  id: number,
+  userId: string,
+  isAShow: boolean
+) {
   const userDocRef = doc(db, "users", userId);
   await setDoc(
-    
     userDocRef,
-    { watchlist: arrayUnion({ id, name }) },
+    {
+      watchlist: arrayUnion({
+        id,
+        isAShow,
+      }),
+    },
     { merge: true }
   );
 }

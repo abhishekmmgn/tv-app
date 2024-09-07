@@ -8,3 +8,11 @@ export type itemType = {
   title: string;
   isAShow: boolean;
 };
+
+export type ItemType =
+  | "video"
+  | "category"
+  | "credits"
+  | "poster"
+  | "season"
+  | "search-results";

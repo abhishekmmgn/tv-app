@@ -21,7 +21,7 @@ export default function SeasonCard(props: PropsType) {
           }
           alt={`Poster of ${props.episode_number}`}
           fill
-          loading="eager"
+          loading="lazy"
           sizes="356px"
           className="object-cover rounded-md"
         />

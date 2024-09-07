@@ -4,12 +4,29 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import usePerfectImage from "@/lib/usePerfectImage";
-import FadeInWrapper from "../fadin-wrapper";
+import { motion } from "framer-motion";
+import { fadeInWrapperParent, fadeInWrapperStat } from "@/lib/utils";
 
 export default function HomeSplash(props: { data: any }) {
+  let parent = {
+    show: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+  let stat = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1 },
+  };
   return (
-    <div className="relative w-full inset-x-0 aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-[110vh] bg-secondary">
-      <FadeInWrapper>
+    <motion.div
+      variants={fadeInWrapperParent}
+      initial="hidden"
+      animate="show"
+      className="relative w-full inset-x-0 aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-[110vh] bg-secondary"
+    >
+      <motion.div variants={fadeInWrapperStat}>
         <Image
           src={usePerfectImage(
             props.data?.poster_path,
@@ -22,7 +39,7 @@ export default function HomeSplash(props: { data: any }) {
           priority
           className="object-cover"
         />
-      </FadeInWrapper>
+      </motion.div>
       <div className="z-10 absolute bottom-0 inset-x-0 h-[50%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
         <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-1">
           {props.data?.name || props.data?.title}
@@ -42,6 +59,6 @@ export default function HomeSplash(props: { data: any }) {
           </Button>
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

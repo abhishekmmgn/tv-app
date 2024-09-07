@@ -55,13 +55,13 @@ const fetchTMDBData = async (endpoint: string) => {
     const err = error as AxiosError;
     if (err.response && err.response.status === 401) {
       console.error("Invalid API key.");
-    } else if (err.response && err.response.status === 401) {
-      console.error("Not found.");
+    } else if (err.response && err.response.status === 404) {
+      return null;
     } else {
-      console.error(err);
+      console.error(err.message);
     }
-    return null;
   }
+  return undefined;
 };
 
 export { requests, fetchTMDBData };

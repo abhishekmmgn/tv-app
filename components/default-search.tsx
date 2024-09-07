@@ -22,15 +22,17 @@ export default async function DefaultSearch() {
             key={index}
           />
         ))}
-        {data.results.map((item: any, index: number) => (
-          <SuggestionCard
-            id={item.id}
-            title={item.title || item.name}
-            isAShow={item.first_air_date || item.name}
-            key={index}
-            image={item.backdrop_path || item.poster_path}
-          />
-        ))}
+        {data?.results
+          .slice(10)
+          .map((item: any, index: number) => (
+            <SuggestionCard
+              id={item.id}
+              title={item.title || item.name}
+              isAShow={item.first_air_date || item.name}
+              key={index}
+              image={item.backdrop_path || item.poster_path}
+            />
+          ))}
       </div>
     </div>
   );

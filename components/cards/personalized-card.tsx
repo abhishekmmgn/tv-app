@@ -4,12 +4,18 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import usePerfectImage from "@/lib/usePerfectImage";
-import FadeInWrapper from "../fadin-wrapper";
+import { motion } from "framer-motion";
+import { fadeInWrapperParent, fadeInWrapperStat } from "@/lib/utils";
 
 export default function PersonalizedCard(props: { data: any }) {
   return (
-    <div className="relative w-full aspect-[9/16] max-h-[90vh] sm:aspect-video bg-secondary rounded-md">
-      <FadeInWrapper>
+    <motion.div
+      variants={fadeInWrapperParent}
+      initial="hidden"
+      animate="show"
+      className="relative w-full aspect-[9/16] max-h-[90vh] sm:aspect-video bg-secondary rounded-md"
+    >
+      <motion.div variants={fadeInWrapperStat}>
         <Image
           src={usePerfectImage(
             props.data?.poster_path,
@@ -20,7 +26,7 @@ export default function PersonalizedCard(props: { data: any }) {
           sizes="100vw"
           className="object-cover rounded-md"
         />
-      </FadeInWrapper>
+      </motion.div>
       <div className="z-10 absolute bottom-0 inset-x-0 h-[75%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10 rounded-b-md">
         <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center line-clamp-1">
           {props.data?.name || props.data?.title}
@@ -40,6 +46,6 @@ export default function PersonalizedCard(props: { data: any }) {
           </Button>
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,5 +1,5 @@
 import genreData from "@/lib/genreData";
-import CardGalleryWrapper from "./wrapper/card-gallery-wrapper";
+import { CardGalleryWrapper } from "@/components/gallery/card-gallery";
 
 type propsType = {
   queryType: "category" | "regular";

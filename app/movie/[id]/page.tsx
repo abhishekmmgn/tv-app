@@ -21,7 +21,6 @@ export async function generateMetadata({
     const image = `https://image.tmdb.org/t/p/w300${
       backdrop_path || profile_path
     }`;
-
     return {
       title: title || name,
       description: overview || tagline,
@@ -35,7 +34,8 @@ export async function generateMetadata({
         type: "website",
       },
     };
-  } catch {
+  } catch (error) {
+    console.log("Not found? ", error);
     return {
       title: "Not found",
       description: "The movie is not available or does not exist",

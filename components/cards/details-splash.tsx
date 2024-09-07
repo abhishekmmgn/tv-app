@@ -9,7 +9,8 @@ import { UserAuth } from "@/providers/auth-provider";
 import handleCopyLink from "@/lib/handleCopyLink";
 import { useState, useEffect } from "react";
 import usePerfectImage from "@/lib/usePerfectImage";
-import FadeInWrapper from "../fadin-wrapper";
+import { motion } from "framer-motion";
+import { fadeInWrapperParent, fadeInWrapperStat } from "@/lib/utils";
 
 type PropsType = {
   id: number;
@@ -64,22 +65,14 @@ export default function DetailsSplash(props: PropsType) {
     }
     setDisabled(false);
   };
-  let parent = {
-    show: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-  let stat = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1 },
-  };
-
-  console.log("Runs.");
   return (
-    <div className="w-full relative aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary">
-      <FadeInWrapper>
+    <motion.div
+      variants={fadeInWrapperParent}
+      initial="hidden"
+      animate="show"
+      className="w-full relative aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary"
+    >
+      <motion.div variants={fadeInWrapperStat}>
         <Image
           src={usePerfectImage(
             props.images?.poster_path,
@@ -91,35 +84,35 @@ export default function DetailsSplash(props: PropsType) {
           sizes="100vw"
           className="object-cover"
         />
-      </FadeInWrapper>
-      <div className="z-10 absolute bottom-0 inset-x-0 h-[70%] bg-gradient-to-b from-black/0 to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
-        <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-2">
-          {props.title}
-        </h1>
-        <p className="text-neutral-300 mb-4 w-3/4 lg:w-1/2 text-center sm:text-left line-clamp-2">
-          {props.tagline || props.overview}
-        </p>
-        {!watched && (
+        <div className="z-10 absolute bottom-0 inset-x-0 h-[70%] bg-gradient-to-b from-black/0 to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
+          <h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-2">
+            {props.title}
+          </h1>
+          <p className="text-neutral-300 mb-4 w-3/4 lg:w-1/2 text-center sm:text-left line-clamp-2">
+            {props.tagline || props.overview}
+          </p>
+          {!watched && (
+            <Button
+              size="lg"
+              className="mb-2 w-64 flex gap-2"
+              disabled={disabled}
+              onClick={handleAddToWatchlist}
+            >
+              <Check className="w-4 h-4" />
+              Mark as Watched
+            </Button>
+          )}
           <Button
             size="lg"
-            className="mb-2 w-64 flex gap-2"
+            className="w-64 flex gap-2"
             disabled={disabled}
-            onClick={handleAddToWatchlist}
+            onClick={handleClick}
           >
-            <Check className="w-4 h-4" />
-            Mark as Watched
+            <Share className="w-4 h-4" />
+            Share
           </Button>
-        )}
-        <Button
-          size="lg"
-          className="w-64 flex gap-2"
-          disabled={disabled}
-          onClick={handleClick}
-        >
-          <Share className="w-4 h-4" />
-          Share
-        </Button>
-      </div>
-    </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { isInWatchlist, addToWatchlist } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import handleCopyLink from "@/lib/handleCopyLink";
@@ -21,10 +21,9 @@ export default function PosterCard(props: itemType) {
   const { user } = UserAuth();
   const [watched, setWatched] = useState(false);
 
-  const link =
-    props.isAShow !== undefined
-      ? `/tv/${props.title}-${props.id}`
-      : `/movie/${props.title}-${props.id}`;
+  const link = props.isAShow
+    ? `/tv/${props.title}-${props.id}`
+    : `/movie/${props.title}-${props.id}`;
 
   useEffect(() => {
     const checkWatchlist = async () => {
@@ -40,7 +39,7 @@ export default function PosterCard(props: itemType) {
     event.stopPropagation();
     if (user) {
       try {
-        await addToWatchlist(props.id, props.title, user.uid);
+        await addToWatchlist(props.id, user.uid, props.isAShow);
         toast.success(`Added to your watchlist.`);
         setWatched(true);
       } catch (error) {
@@ -66,6 +65,7 @@ export default function PosterCard(props: itemType) {
           <Image
             src={props.image ? props.image : noItem}
             fill
+            loading="lazy"
             sizes="(max-width: 1024px) 232px, 284px"
             alt={props.title}
           />

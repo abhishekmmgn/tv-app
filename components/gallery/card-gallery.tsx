@@ -5,18 +5,23 @@ import PostersGallery from "./posters-gallery";
 import CreditsGallery from "./credits-gallery";
 import CategoriesGallery from "./categories-gallery";
 import SeasonCardGallery from "./season-gallery";
+import type { ItemType } from "@/types";
+import { fetchTMDBData } from "@/lib/requests";
+import { categories } from "@/lib/data";
+
+type CardGalleryWrapperProps = {
+  title: string;
+  url: string;
+  type: ItemType;
+};
 
 type PropsType = {
   title: string;
   data: any;
-  type:
-    | "video"
-    | "category"
-    | "credits"
-    | "poster"
-    | "season"
-    | "search-results";
+  type: ItemType;
 };
+
+export const dynamic = "force-dynamic";
 
 export default function CardGallery(props: PropsType) {
   return (
@@ -28,30 +33,42 @@ export default function CardGallery(props: PropsType) {
         </h1>
       )}
       <div>
-        <div className="flex gap-5 overflow-x-auto whitespace-nowrap no-scrollbar">
-          {(() => {
-            switch (props.type) {
-              case "video":
-                return <VideoCardGallery data={props.data} />;
-              case "poster":
-                return <PostersGallery data={props.data} />;
-              case "search-results":
-                return <PostersGallery data={props.data} />;
-              case "credits":
-                return <CreditsGallery data={props.data} />;
-              case "category":
-                return <CategoriesGallery />;
-              case "season":
-                return <SeasonCardGallery data={props.data} />;
-              default:
-                return <></>;
-            }
-          })()}
-        </div>
+        {props.data && (
+          <div className="flex gap-5 overflow-x-auto whitespace-nowrap no-scrollbar">
+            {(() => {
+              switch (props.type) {
+                case "video":
+                  return <VideoCardGallery data={props.data} />;
+                case "poster":
+                  return <PostersGallery data={props.data} />;
+                case "search-results":
+                  return <PostersGallery data={props.data} />;
+                case "credits":
+                  return <CreditsGallery data={props.data} />;
+                case "category":
+                  return <CategoriesGallery />;
+                case "season":
+                  return <SeasonCardGallery data={props.data} />;
+                default:
+                  return <></>;
+              }
+            })()}
+          </div>
+        )}
         <div className="mt-5">
           <Separator />
         </div>
       </div>
     </div>
   );
+}
+
+export async function CardGalleryWrapper(props: CardGalleryWrapperProps) {
+  const data = await fetchTMDBData(props.url);
+  if (props.type === "category") {
+    return (
+      <CardGallery data={categories} title={props.title} type={props.type} />
+    );
+  }
+  return <CardGallery data={data} title={props.title} type={props.type} />;
 }

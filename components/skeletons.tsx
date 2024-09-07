@@ -1,5 +1,7 @@
 import { Skeleton } from "./ui/skeleton";
 import { Separator } from "./ui/separator";
+import { ItemType } from "@/types";
+import { ChevronRight } from "lucide-react";
 
 export function PosterCardSkeleton() {
   return (
@@ -74,39 +76,32 @@ export function SearchSuggestionsCardSkeleton() {
   );
 }
 
-type PropsType = {
-  type:
-    | "video"
-    | "category"
-    | "cast"
-    | "crew"
-    | "poster"
-    | "season"
-    | "search-results";
-};
-
-export function CardGallerySkeleton(props: PropsType) {
+export function CardGallerySkeleton({
+  title,
+  type,
+}: {
+  title: string;
+  type: ItemType;
+}) {
   const loadingArray = Array.from({ length: 10 }, (_, i) => i + 1);
   return (
     <div className="relative px-5 md:px-8 xl:px-12 group">
-      <Skeleton className="mb-3 h-3 w-32" />
+      <h1 className="font-semibold text-lg mb-3 text-neutral-200 capitalize">
+        <span>{title}</span>
+        <ChevronRight className="w-4 h-4 inline" />
+      </h1>
       <div>
         <div className="flex gap-5 overflow-x-auto whitespace-nowrap no-scrollbar">
           {loadingArray.map((item) => {
-            if (props.type === "video") {
+            if (type === "video") {
               return <VideoCardSkeleton key={item} />;
-            } else if (props.type === "category") {
+            } else if (type === "category") {
               return <PosterCardSkeleton key={item} />;
-            } else if (props.type === "cast") {
+            } else if (type === "credits") {
               return <CreditsCardSkeleton key={item} />;
-            } else if (props.type === "crew") {
-              return <CreditsCardSkeleton key={item} />;
-            } else if (
-              props.type === "poster" ||
-              props.type === "search-results"
-            ) {
+            } else if (type === "poster" || type === "search-results") {
               return <PosterCardSkeleton key={item} />;
-            } else if (props.type === "season") {
+            } else if (type === "season") {
               return <SeasonCardSkeleton key={item} />;
             }
           })}

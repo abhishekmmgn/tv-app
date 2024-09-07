@@ -3,7 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { AuthContextProvider } from "@/providers/auth-provider";
 import { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +18,6 @@ export const metadata: Metadata = {
     siteName: "TV App",
     locale: "en_US",
     type: "website",
-    
   },
   description: "Get recommendations for your next TV show.",
   manifest: "/manifest.json",
@@ -36,7 +35,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log("Hello")
   return (
     <html lang="en">
       <body>
