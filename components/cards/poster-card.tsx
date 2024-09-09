@@ -15,7 +15,6 @@ import { isInWatchlist, addToWatchlist } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import handleCopyLink from "@/lib/handleCopyLink";
 import { itemType } from "@/types";
-import noItem from "../../public/no-item.png";
 
 export default function PosterCard(props: itemType) {
   const { user } = UserAuth();
@@ -63,7 +62,7 @@ export default function PosterCard(props: itemType) {
       <Link href={link} scroll={true}>
         <div className="relative bg-secondary w-full aspect-[1/1.5] mb-2 shadow-sm group">
           <Image
-            src={props.image ? props.image : noItem}
+            src={props.image}
             fill
             loading="lazy"
             sizes="(max-width: 1024px) 232px, 284px"
@@ -98,7 +97,7 @@ export default function PosterCard(props: itemType) {
                 className="space-x-4 flex justify-between"
                 onClick={handleClick}
               >
-                <div>Share</div>
+                <p>Share</p>
                 <Share className="w-4 h-4" />
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -21,7 +21,7 @@ export default function Navbar() {
       <div className="w-1/3 flex items-center justify-end gap-5 sm:w-1/2 sm:gap-3">
         <div
           onClick={() => {
-            if (pathname !== "/search") {
+            if (pathname === "/") {
               router.push("/search");
             }
           }}

@@ -101,7 +101,7 @@ export default function SettingsModal() {
               </div>
             </div>
             <Separator />
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <h1 className="font-semibold text-xl text-neutral-300">
                 Content Restriction
               </h1>
@@ -112,7 +112,7 @@ export default function SettingsModal() {
                   onCheckedChange={changeRestrictionMode}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </DialogContent>
       </Dialog>

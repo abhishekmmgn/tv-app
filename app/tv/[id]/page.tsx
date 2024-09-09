@@ -17,10 +17,8 @@ export async function generateMetadata({
   try {
     const res = await fetchTMDBData(`tv/${showId}`);
 
-    const { name, title, overview, tagline, backdrop_path, profile_path } = res;
-    const image = `https://image.tmdb.org/t/p/w300${
-      backdrop_path || profile_path
-    }`;
+    const { name, title, overview, tagline, backdrop_path } = res;
+    const image = `https://image.tmdb.org/t/p/w300${backdrop_path}`;
     return {
       title: title || name,
       description: overview || tagline,

@@ -1,10 +1,12 @@
+import { StaticImageData } from "next/image";
+
 export type galleryType = {
   data: any;
 };
 
 export type itemType = {
   id: number;
-  image: string;
+  image: string | StaticImageData; 
   title: string;
   isAShow: boolean;
 };
