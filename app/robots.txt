@@ -1,5 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /private/
-Sitemap: https://www.tv-app-beta.vercel.app./sitemap.xml
-

@@ -1,62 +1,63 @@
 import HomeSplash from "@/components/cards/home-splash";
 import PersonalizedCard from "@/components/cards/personalized-card";
-import { requests, fetchTMDBData } from "@/lib/requests";
 import { CardGalleryWrapper } from "@/components/gallery/card-gallery";
 import Library from "@/components/library";
-import type { ItemType } from "@/types";
-import { Suspense } from "react";
 import { CardGallerySkeleton } from "@/components/skeletons";
+import { fetchTMDBData, requests } from "@/lib/requests";
+import type { CardType } from "@/types";
+import { Suspense } from "react";
 
 export const revalidate = 300;
 
 type PropsType = {
-  title: string;
-  url: string;
-  type: ItemType;
+	title: string;
+	url: string;
+	type: CardType;
 };
 const items: PropsType[] = [
-  {
-    title: "Now Playing",
-    url: requests.fetchNowPlaying,
-    type: "poster",
-  },
-  {
-    title: "Explore Shows",
-    type: "poster",
-    url: requests.fetchShows,
-  },
-  {
-    title: "Future Releases",
-    type: "poster",
-    url: requests.fetchUpcoming,
-  },
-  {
-    title: "All of Apple TV+",
-    type: "poster",
-    url: requests.fetchAppleTV,
-  },
-  {
-    title: "All of Hulu",
-    type: "poster",
-    url: requests.fetchHulu,
-  },
-  {
-    title: "All of Disney+",
-    type: "poster",
-    url: requests.fetchDisney,
-  },
-  {
-    title: "All of HBO",
-    type: "poster",
-    url: requests.fetchHBO,
-  },
+	{
+		title: "Now Playing",
+		url: requests.fetchNowPlaying,
+		type: "poster",
+	},
+	{
+		title: "Explore Shows",
+		type: "poster",
+		url: requests.fetchShows,
+	},
+	{
+		title: "Future Releases",
+		type: "poster",
+		url: requests.fetchUpcoming,
+	},
+	{
+		title: "All of Apple TV+",
+		type: "poster",
+		url: requests.fetchAppleTV,
+	},
+	{
+		title: "All of Hulu",
+		type: "poster",
+		url: requests.fetchHulu,
+	},
+	{
+		title: "All of Disney+",
+		type: "poster",
+		url: requests.fetchDisney,
+	},
+	{
+		title: "All of HBO",
+		type: "poster",
+		url: requests.fetchHBO,
+	},
 ];
 
 export default async function Home() {
-  const popular = await fetchTMDBData(requests.fetchTrendingToday);
-  return (
-    <>
-      <HomeSplash data={popular?.results[0]} />
+	const popular = await fetchTMDBData(requests.fetchTrendingToday);
+	console.log("Home: ", popular);
+	return (
+		<>
+			{/* <HomeSplash data={popular?.results[0]} />
       <div className="py-6 space-y-6">
         {items
           .slice(0, items.length / 2)
@@ -102,7 +103,7 @@ export default async function Home() {
         <div className="px-5 md:px-8 xl:px-12">
           <PersonalizedCard data={popular?.results[2]} />
         </div>
-      </div>
-    </>
-  );
+      </div> */}
+		</>
+	);
 }
