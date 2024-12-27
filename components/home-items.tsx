@@ -1,6 +1,5 @@
 import PersonalizedCard from "@/components/cards/personalized-card";
 import { CardGalleryWrapper } from "@/components/gallery/card-gallery";
-import Library from "@/components/library";
 import { CardGallerySkeleton } from "@/components/skeletons";
 import type { CardType } from "@/types";
 import { Suspense } from "react";
@@ -22,7 +21,6 @@ export default function HomeItems({ popular }: { popular: DataListType[] }) {
 					/>
 				</Suspense>
 			))}
-			<Library />
 			<CardGalleryWrapper title="Explore by Category" type="category" url="" />
 			<div className="px-5 md:px-8 xl:px-12">
 				<PersonalizedCard data={popular[0]} />

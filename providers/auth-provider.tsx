@@ -5,6 +5,7 @@ import {
 	onAuthStateChanged,
 	signInWithPopup,
 	signOut,
+	User,
 } from "firebase/auth";
 import { deleteUser } from "firebase/auth";
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
@@ -25,7 +26,7 @@ export const AuthContextProvider = ({
 }: {
 	children: React.ReactNode;
 }) => {
-	const [user, setUser] = useState<{} | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 
 	const googleSignIn = async () => {
 		const provider = new GoogleAuthProvider();

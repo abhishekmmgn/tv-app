@@ -20,14 +20,12 @@ export default function Library() {
 			console.log("Document data:", docSnap.data());
 			const returnedData: {
 				id: number;
-				isAShow: boolean;
+				type: ItemType;
 			}[] = docSnap.data()?.watchlist || [];
 			const items: ItemType[] = [];
 			if (returnedData.length) {
 				for (const item of returnedData) {
-					const details = await fetchTMDBData(
-						`${item.isAShow ? "tv" : "movie"}/${item.id}`,
-					);
+					const details = await fetchTMDBData(`${item.type}/${item.id}`);
 					items.push(details);
 				}
 				console.log("Items:", items);

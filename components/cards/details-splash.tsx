@@ -11,7 +11,7 @@ import { addToWatchlist, isInWatchlist } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import type { DataDetailsType, ItemType } from "@/types";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, ChevronRight, Share } from "lucide-react";
+import { ArrowRight, Check, Share } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -33,6 +33,7 @@ export default function DetailsSplash({
 			isInWatchlist(data.id, user?.uid).then((result) => {
 				setWatched(result);
 			});
+			console.log(user);
 		}
 	}, [user, data.id]);
 
@@ -41,10 +42,11 @@ export default function DetailsSplash({
 		setDisabled(true);
 		if (user) {
 			try {
-				await addToWatchlist(data.id, name, user?.uid);
+				await addToWatchlist(data.id, user.uid, type);
 				toast.success(`Added to your watchlist.`);
 				setWatched(true);
 			} catch (error) {
+				console.log(error);
 				toast.error(`Failed to add.`);
 			}
 		} else {
@@ -106,12 +108,7 @@ export default function DetailsSplash({
 								<Check className="w-4 h-4" />
 							</Button>
 						)}
-						<Button
-							size="lg"
-							className="w-64 flex gap-2"
-							disabled={disabled}
-							onClick={handleClick}
-						>
+						<Button size="lg" className="w-64 flex gap-2" onClick={handleClick}>
 							Share
 							<Share className="w-4 h-4" />
 						</Button>
