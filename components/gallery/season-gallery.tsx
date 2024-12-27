@@ -1,10 +1,10 @@
-import { galleryType } from "@/types";
+import { GalleryType } from "@/types";
 import SeasonCard from "../cards/season-card";
 
-export default function SeasonCardGallery(props: galleryType) {
+export default function SeasonCardGallery({ data }: { data: GalleryType[] }) {
 	return (
 		<>
-			{props.data?.episodes.map((episode: any, index: number) => (
+			{data.map((episode: any, index: number) => (
 				<div key={index}>
 					<SeasonCard
 						image={episode.still_path}

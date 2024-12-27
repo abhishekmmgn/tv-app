@@ -7,15 +7,14 @@ import {
 	fadeInWrapperStat,
 	generateLink,
 } from "@/lib/utils";
-import type { ItemType } from "@/types";
+import type { DataListType } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function PersonalizedCard({ data }: { data: any }) {
-	const item: ItemType = data?.first_air_date || data?.name ? "tv" : "movie";
+export default function PersonalizedCard({ data }: { data: DataListType }) {
 	const name = data?.name || data?.title;
-	const link = generateLink(item, name, data.id);
+	const link = generateLink(data.media_type, name as string, data.id);
 	return (
 		<motion.div
 			variants={fadeInWrapperParent}

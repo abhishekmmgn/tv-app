@@ -1,23 +1,13 @@
 import personIcon from "@/public/person.png";
+import { CastProfileType } from "@/types";
 import Image from "next/image";
 
-type PropsType = {
-	name: string;
-	image: string | null;
-	character?: string;
-	job?: string;
-};
-
-export default function CastProfile(props: PropsType) {
+export default function CastProfile(props: CastProfileType) {
 	return (
 		<>
 			<div className="relative w-24 md:w-28 xl:w-32 h-24 md:h-28 xl:h-32 bg-secondary rounded-full shadow-sm">
 				<Image
-					src={
-						props.image !== null
-							? `https://image.tmdb.org/t/p/w154${props.image}`
-							: personIcon
-					}
+					src={props.profile_path ?? personIcon}
 					fill
 					loading="lazy"
 					sizes="128px"

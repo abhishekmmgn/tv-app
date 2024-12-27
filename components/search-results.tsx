@@ -27,12 +27,12 @@ export default async function SearchResults(props: propsType) {
 				<div className="space-y-6">
 					<CardGalleryWrapper
 						title={`Movies on ${props.term}`}
-						type="search-results"
+						type="poster"
 						url={`search/movie?query=${props.term}`}
 					/>
 					<CardGalleryWrapper
 						title={`Shows on ${props.term}`}
-						type="search-results"
+						type="poster"
 						url={`search/tv?query=${props.term}`}
 					/>
 				</div>

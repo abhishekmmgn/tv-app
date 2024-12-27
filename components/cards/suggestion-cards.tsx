@@ -34,7 +34,6 @@ type suggestionProps = {
 
 export function SuggestionCard(props: suggestionProps) {
 	const link = generateLink(props.type, props.title, props.id);
-
 	return (
 		<Link href={link}>
 			<div className="relative w-full aspect-video shadow-sm rounded-xl bg-secondary">

@@ -35,11 +35,11 @@ export default function SeasonCard(props: PropsType) {
 				<h1 className="text-sm font-semibold line-clamp-1 mr-1 md:text-sm+">
 					{props.name}
 				</h1>
-				<p className="text-sm text-secondary-foreground/80 mr-1 whitespace-normal break-words md:text-sm+">
+				<p className="text-sm text-muted-foreground/80 mr-1 whitespace-normal break-words md:text-sm+">
 					{props.overview}
 				</p>
 				{props.runtime !== null && (
-					<small className="text-secondary-foreground/60">
+					<small className="text-xs text-muted-foreground/60">
 						{props.runtime / 60 >= 1 && `${Math.floor(props.runtime / 60)} hr`}{" "}
 						{props.runtime % 60 > 0 && `${Math.floor(props.runtime % 60)} min`}
 					</small>

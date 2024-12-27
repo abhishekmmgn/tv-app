@@ -9,29 +9,24 @@ import {
 } from "@/lib/utils";
 import { addToWatchlist, isInWatchlist } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
-import type { ItemType } from "@/types";
+import type { DataDetailsType, ItemType } from "@/types";
 import { motion } from "framer-motion";
-import { Check, Share } from "lucide-react";
+import { ArrowRight, Check, ChevronRight, Share } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 
-type PropsType = {
-	id: number;
-	title: string;
-	images: { backdrop_path?: string; poster_path?: string };
-	tagline?: string;
-	overview?: string;
-	type: ItemType;
-};
-
-export default function DetailsSplash(data: PropsType) {
+export default function DetailsSplash({
+	data,
+	type,
+}: { data: DataDetailsType; type: ItemType }) {
 	const [watched, setWatched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
 	const { user } = UserAuth();
 
-	const link = generateLink(data.type, data.title, data.id);
+	const name = (data.title || data.name) as string;
+	const link = generateLink(type, name, data.id);
 
 	useEffect(() => {
 		if (user) {
@@ -46,7 +41,7 @@ export default function DetailsSplash(data: PropsType) {
 		setDisabled(true);
 		if (user) {
 			try {
-				await addToWatchlist(data.id, data.title, user?.uid);
+				await addToWatchlist(data.id, name, user?.uid);
 				toast.success(`Added to your watchlist.`);
 				setWatched(true);
 			} catch (error) {
@@ -77,10 +72,7 @@ export default function DetailsSplash(data: PropsType) {
 		>
 			<motion.div variants={fadeInWrapperStat}>
 				<Image
-					src={usePerfectImage(
-						data.images?.poster_path,
-						data.images?.backdrop_path,
-					)}
+					src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
 					alt={`Poster of ${data?.title}`}
 					fill
 					priority
@@ -89,31 +81,41 @@ export default function DetailsSplash(data: PropsType) {
 				/>
 				<div className="z-10 absolute bottom-0 inset-x-0 h-[70%] bg-gradient-to-b from-black/0 to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
 					<h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-2">
-						{data.title}
+						{name}
 					</h1>
 					<p className="text-neutral-300 mb-4 w-3/4 lg:w-1/2 text-center sm:text-left line-clamp-2">
 						{data.tagline || data.overview}
 					</p>
-					{!watched && (
+					<div className="space-y-2">
+						{data.homepage && (
+							<Button size="lg" className="w-64 flex gap-2" asChild>
+								<a href={data.homepage} target="_blank" rel="noreferrer">
+									Watch
+									<ArrowRight className="w-4 h-4 -rotate-45" />
+								</a>
+							</Button>
+						)}
+						{!watched && (
+							<Button
+								size="lg"
+								className="w-64 flex gap-2"
+								disabled={disabled}
+								onClick={handleAddToWatchlist}
+							>
+								Mark as Watched
+								<Check className="w-4 h-4" />
+							</Button>
+						)}
 						<Button
 							size="lg"
-							className="mb-2 w-64 flex gap-2"
+							className="w-64 flex gap-2"
 							disabled={disabled}
-							onClick={handleAddToWatchlist}
+							onClick={handleClick}
 						>
-							<Check className="w-4 h-4" />
-							Mark as Watched
+							Share
+							<Share className="w-4 h-4" />
 						</Button>
-					)}
-					<Button
-						size="lg"
-						className="w-64 flex gap-2"
-						disabled={disabled}
-						onClick={handleClick}
-					>
-						<Share className="w-4 h-4" />
-						Share
-					</Button>
+					</div>
 				</div>
 			</motion.div>
 		</motion.div>

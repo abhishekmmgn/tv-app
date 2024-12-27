@@ -1,10 +1,11 @@
 import { Separator } from "@/components/ui/separator";
+import { DataDetailsType } from "@/types";
 
 export default function Details({
 	details,
 	isAShow,
 }: {
-	details: any;
+	details: DataDetailsType;
 	isAShow: boolean;
 }) {
 	return (
@@ -13,7 +14,7 @@ export default function Details({
 				<h1 className="text-xl font-semibold md:text-2xl">
 					{details.title || details.name}
 				</h1>
-				<p className="mt-1 text-sm text-neutral-300 lg:w-1/3">
+				<p className="mt-1 text-sm text-neutral-300 lg:max-w-lg">
 					{details.overview}
 				</p>
 			</div>
@@ -21,9 +22,9 @@ export default function Details({
 			<div className="flex flex-col md:grid md:grid-cols-2 gap-2 justify-start md:gap-3">
 				{details.original_title !== details.title && (
 					<div>
-						<h2 className="text-base font-medium text-secondary-foreground">
+						<p className="font-medium text-secondary-foreground">
 							Orignal Title
-						</h2>
+						</p>
 						<p className="text-sm text-accent capitalize">
 							{details.original_title}
 						</p>
@@ -31,94 +32,81 @@ export default function Details({
 				)}
 				{details.original_language && (
 					<div>
-						<h2 className="text-base font-medium text-secondary-foreground">
+						<p className="font-medium text-secondary-foreground">
 							Orignal Language
-						</h2>
+						</p>
 						<p className="text-sm text-accent capitalize">
 							{details.original_language}
 						</p>
 					</div>
 				)}
-				{isAShow && (
+				{details.number_of_seasons && (
 					<>
 						<div>
-							<h2 className="text-base font-medium text-secondary-foreground">
-								Seasons
-							</h2>
+							<p className="font-medium text-secondary-foreground">Seasons</p>
 							<p className="text-sm text-accent">{details.number_of_seasons}</p>
-						</div>
-						<div>
-							<h2 className="text-base font-medium text-secondary-foreground">
-								Episodes per Season
-							</h2>
-							<p className="text-sm text-accent">
-								~
-								{Math.floor(
-									details.number_of_episodes / details.number_of_seasons,
-								)}
-							</p>
 						</div>
 					</>
 				)}
 				{details.runtime && (
 					<div>
-						<h2 className="text-base font-medium text-secondary-foreground">
-							Duration
-						</h2>
-						<p className="text-sm text-accent">
-							{Math.floor(details.runtime / 60)} hr {details.runtime % 60} min
-						</p>
+						<p className="font-medium text-secondary-foreground">Duration</p>
+						<p className="text-sm text-accent">{details.runtime} minutes</p>
 					</div>
 				)}
 				{details.belongs_to_collection && (
 					<div>
-						<h2 className="text-base font-medium text-secondary-foreground">
-							Collection
-						</h2>
+						<p className="font-medium text-secondary-foreground">Collection</p>
 						<p className="text-sm text-accent">
 							{details.belongs_to_collection.name}
 						</p>
 					</div>
 				)}
 				<div>
-					<h2 className="text-base font-medium text-secondary-foreground">
-						Genre
-					</h2>
+					<p className="font-medium text-secondary-foreground">Genre</p>
 					<p className="text-sm text-accent">
 						{details.genres?.map((genre: any) => genre.name).join(", ")}
 					</p>
 				</div>
 				<div>
-					<h2 className="text-base font-medium text-secondary-foreground">
-						Status
-					</h2>
+					<p className="font-medium text-secondary-foreground">Status</p>
 					<p className="text-sm text-accent">{details.status}</p>
 				</div>
 				<div>
-					<h2 className="text-base font-medium text-secondary-foreground">
-						Release Data
-					</h2>
+					<p className="font-medium text-secondary-foreground">Release Data</p>
 					<p className="text-sm text-accent">
 						{details.first_air_date || details.release_date}
 					</p>
 				</div>
+				{details.budget && (
+					<div>
+						<p className="font-medium text-secondary-foreground">Budget</p>
+						<p className="text-sm text-accent">${details.budget}</p>
+					</div>
+				)}
+				{details.revenue && (
+					<div>
+						<p className="font-medium text-secondary-foreground">Revenue</p>
+						<p className="text-sm text-accent">${details.revenue}</p>
+					</div>
+				)}
 				{details.production_companies && (
 					<div>
-						<h2 className="text-base font-medium text-secondary-foreground">
-							Produced By
-						</h2>
+						<p className="font-medium text-secondary-foreground">
+							Production Companies
+						</p>
 						<p className="text-sm text-accent">
 							{details.production_companies
-								.map((company: any) => company.name)
+								.map((company) => company.name)
 								.join(", ")}
 						</p>
 					</div>
 				)}
 				{details.networks && (
 					<div>
-						<h2 className="text-base font-medium text-secondary-foreground">
+						<p className="font-medium text-secondary-foreground">
 							Streaming Network
-						</h2>
+						</p>
 						<p className="text-sm text-accent">
 							{details.networks.map((network: any) => network.name).join(", ")}
 						</p>

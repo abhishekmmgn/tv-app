@@ -1,5 +1,6 @@
 import noItem from "@/public/no-item.png";
 import PosterCard from "../cards/poster-card";
+import { DataListType } from "@/types";
 
 function perfectImage(posterPath: string, backdropPath: string) {
 	if (posterPath) {
@@ -10,7 +11,7 @@ function perfectImage(posterPath: string, backdropPath: string) {
 		return noItem;
 	}
 }
-export default function PosterCardGallery(data: any) {
+export default function PosterCardGallery({ data }: { data: DataListType[] }) {
 	return (
 		<>
 			{data.map((item: any, index: number) => (

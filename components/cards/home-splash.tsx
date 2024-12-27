@@ -6,13 +6,13 @@ import {
 	fadeInWrapperStat,
 	generateLink,
 } from "@/lib/utils";
-import type { ItemType } from "@/types";
+import type { DataListType } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-export default function HomeSplash({ data }: { data: any }) {
+export default function HomeSplash({ data }: { data: DataListType }) {
 	let parent = {
 		show: {
 			transition: {
@@ -24,9 +24,8 @@ export default function HomeSplash({ data }: { data: any }) {
 		hidden: { opacity: 0 },
 		show: { opacity: 1 },
 	};
-	const item: ItemType = data?.first_air_date || data?.name ? "tv" : "movie";
 	const name = data?.name || data?.title;
-	const link = generateLink(item, name, data.id);
+	const link = generateLink(data.media_type, name as string, data.id);
 	return (
 		<motion.div
 			variants={fadeInWrapperParent}
@@ -37,7 +36,7 @@ export default function HomeSplash({ data }: { data: any }) {
 			<motion.div variants={fadeInWrapperStat}>
 				<Image
 					src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
-					alt={`Poster of ${data?.name || data?.title}`}
+					alt={`Poster of ${name}`}
 					fill
 					loading="eager"
 					sizes="100vw"

@@ -104,9 +104,7 @@ export default function PosterCard({ id, image, title, type }: BasicDataType) {
 				</div>
 			</Link>
 
-			<h2 className="text-sm font-semibold whitespace-pre-line mr-1">
-				{title}
-			</h2>
+			<p className="text-sm font-semibold whitespace-pre-line mr-1">{title}</p>
 		</div>
 	);
 }

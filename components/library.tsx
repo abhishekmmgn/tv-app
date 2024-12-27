@@ -2,20 +2,19 @@
 
 import { auth, db } from "@/firebase-config";
 import { fetchTMDBData } from "@/lib/requests";
-import type { itemType } from "@/types";
+import type { ItemType } from "@/types";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import CardGallery from "./gallery/card-gallery";
 import { CardGallerySkeleton } from "./skeletons";
 
 export default function Library() {
-	const [data, setData] = useState<itemType[]>([]);
+	const [data, setData] = useState<ItemType[]>([]);
 	const [loading, setLoading] = useState(false);
 
 	async function fetchLibraryData() {
 		setLoading(true);
-		const docRef = doc(db, "users", auth?.currentUser?.uid!);
-		const docSnap = await getDoc(docRef);
+		const docSnap = await getDoc(doc(db, "users", auth?.currentUser?.uid!));
 
 		if (docSnap.exists()) {
 			console.log("Document data:", docSnap.data());
@@ -23,7 +22,7 @@ export default function Library() {
 				id: number;
 				isAShow: boolean;
 			}[] = docSnap.data()?.watchlist || [];
-			const items: itemType[] = [];
+			const items: ItemType[] = [];
 			if (returnedData.length) {
 				for (const item of returnedData) {
 					const details = await fetchTMDBData(

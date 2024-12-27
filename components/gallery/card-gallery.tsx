@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { fetchTMDBData } from "@/lib/requests";
-import type { CardType } from "@/types";
+import type { CardType, DataListType, GalleryType } from "@/types";
 import { ChevronRight } from "lucide-react";
 import CategoriesGallery from "./categories-gallery";
 import CreditsGallery from "./credits-gallery";
@@ -33,11 +33,13 @@ export default function CardGallery({
 						{(() => {
 							switch (type) {
 								case "video":
-									return <VideoCardGallery data={data} />;
+									return (
+										<VideoCardGallery data={data.results as GalleryType[]} />
+									);
 								case "poster":
-									return <PosterCardGallery data={data} />;
-								case "search-results":
-									return <PosterCardGallery data={data} />;
+									return (
+										<PosterCardGallery data={data.results as DataListType[]} />
+									);
 								case "credits":
 									return <CreditsGallery data={data} />;
 								case "category":
@@ -67,12 +69,9 @@ export async function CardGalleryWrapper({
 	url: string;
 	type: CardType;
 }) {
-	const data = await fetchTMDBData(url);
-	console.log("Cardgallerywrapper: ", data);
 	if (type === "category") {
 		return <CardGallery data={[]} title={title} type={type} />;
 	}
-	return (
-		<CardGallery data={data?.results?.slice(0, 10)} title={title} type={type} />
-	);
+	const data = await fetchTMDBData(url);
+	return <CardGallery data={data} title={title} type={type} />;
 }

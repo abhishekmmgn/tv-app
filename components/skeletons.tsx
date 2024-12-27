@@ -99,7 +99,7 @@ export function CardGallerySkeleton({
 							return <PosterCardSkeleton key={item} />;
 						} else if (type === "credits") {
 							return <CreditsCardSkeleton key={item} />;
-						} else if (type === "poster" || type === "search-results") {
+						} else if (type === "poster") {
 							return <PosterCardSkeleton key={item} />;
 						} else if (type === "season") {
 							return <SeasonCardSkeleton key={item} />;

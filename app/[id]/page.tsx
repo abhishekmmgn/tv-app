@@ -1,6 +1,6 @@
 import DetailsCard from "@/components/cards/details-card";
 import { fetchTMDBData } from "@/lib/requests";
-import type { ItemType } from "@/types";
+import type { DataDetailsType, DataListType, ItemType } from "@/types";
 import type { Metadata } from "next";
 
 type Params = {
@@ -19,11 +19,10 @@ export async function generateMetadata({
 	const itemId: string = parts[2];
 
 	try {
-		const res = await fetchTMDBData(`${type}/${itemId}`);
-
-		const { name, tagline, backdrop_path, profile_path } = res;
+		const res: DataListType = await fetchTMDBData(`${type}/${itemId}`);
+		const { name, tagline, backdrop_path, poster_path } = res;
 		const image = `https://image.tmdb.org/t/p/w300${
-			backdrop_path || profile_path
+			backdrop_path || poster_path
 		}`;
 		return {
 			title: name,
@@ -53,7 +52,6 @@ export default async function MovieDetails({ params: { id } }: Params) {
 	const type: string = parts[0];
 	const itemId: string = parts[2];
 
-	const details = await fetchTMDBData(`${type}/${itemId}`);
-
+	const details: DataDetailsType = await fetchTMDBData(`${type}/${itemId}`);
 	return <DetailsCard details={details} type={type as ItemType} />;
 }

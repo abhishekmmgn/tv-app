@@ -11,19 +11,23 @@ import {
 import { fetchTMDBData } from "@/lib/requests";
 import { useEffect, useState } from "react";
 import CardGallery from "./gallery/card-gallery";
+import { GalleryType } from "@/types";
 
-export default function Seasons(props: { id: string; seasons: number }) {
+export default function Seasons({
+	id,
+	seasons,
+}: { id: number; seasons: number }) {
 	const [currentSeason, setCurrentSeason] = useState(1);
-	const [data, setData] = useState<null | any>(null);
+	const [data, setData] = useState<GalleryType[]>([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const res = await fetchTMDBData(`tv/${props.id}/season/${currentSeason}`);
-			setData(res);
+			const res = await fetchTMDBData(`tv/${id}/season/${currentSeason}`);
+			setData(res.episodes);
 		};
 
 		fetchData();
-	}, [props.id, currentSeason]);
+	}, [id, currentSeason]);
 
 	return (
 		<div className="space-y-2">
@@ -38,7 +42,7 @@ export default function Seasons(props: { id: string; seasons: number }) {
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
-						{Array.from({ length: props.seasons }, (_, i) => (
+						{Array.from({ length: seasons }, (_, i) => (
 							<SelectItem key={i} value={`season-${i + 1}`}>
 								Season {i + 1}
 							</SelectItem>
