@@ -63,7 +63,7 @@ export default function AuthModal() {
     return (
       <>
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button variant="link" className="text-accent hover:cursor-pointer">
               Sign In
             </Button>
@@ -77,8 +77,10 @@ export default function AuthModal() {
   }
   return (
     <Drawer>
-      <DrawerTrigger>
-        <p className="text-accent hover:cursor-pointer">Sign In</p>
+      <DrawerTrigger asChild>
+        <Button variant="link" className="text-accent hover:cursor-pointer">
+          Sign In
+        </Button>
       </DrawerTrigger>
       <DrawerContent className="p-5">
         <AuthModalContent />

@@ -27,6 +27,7 @@ export default function PersonalizedCard({ data }: { data: DataListType }) {
           src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
           alt={`Poster of ${name}`}
           fill
+          loading="lazy"
           sizes="100vw"
           className="object-cover rounded-md"
         />
