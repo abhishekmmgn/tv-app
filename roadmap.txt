@@ -1,0 +1,5 @@
+[] Show search results in grid view and add tabs to filter movies and shows
+[] Add a feedback page for feature requests and bugs
+[] Reduce initial page load
+[] Add additional categories
+[] Reduce initial page loads for every route
