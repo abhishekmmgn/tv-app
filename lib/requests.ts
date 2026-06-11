@@ -36,14 +36,21 @@ const requests = {
 	fetchVideos: `/videos`,
 };
 
-const fetchTMDBData = async (endpoint: string) => {
+const fetchTMDBData = async (
+	endpoint: string,
+	options?: { revalidate?: number | false },
+) => {
 	try {
-		const response = await fetch(`https://api.themoviedb.org/3/${endpoint}`, {
-			headers: {
-				accept: "application/json",
-				Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_AUTH_TOKEN}`,
+		const response = await fetch(
+			`https://api.themoviedb.org/3/${endpoint}`,
+			{
+				headers: {
+					accept: "application/json",
+					Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_AUTH_TOKEN}`,
+				},
+				next: { revalidate: options?.revalidate ?? 3600 },
 			},
-		});
+		);
 
 		if (response.status === 401) {
 			console.error("Invalid API key.");

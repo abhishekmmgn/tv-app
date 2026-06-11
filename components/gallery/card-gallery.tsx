@@ -8,8 +8,6 @@ import PosterCardGallery from "./posters-gallery";
 import SeasonCardGallery from "./season-gallery";
 import VideoCardGallery from "./video-gallery";
 
-export const dynamic = "force-dynamic";
-
 export default function CardGallery({
 	title,
 	data,

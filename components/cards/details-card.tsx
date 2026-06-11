@@ -1,14 +1,11 @@
-import { CardGalleryWrapper } from "@/components/gallery/card-gallery";
+import CardGallery from "@/components/gallery/card-gallery";
 import { Separator } from "@/components/ui/separator";
 import type { DataDetailsType, ItemType } from "@/types";
 import Link from "next/link";
-import { Suspense } from "react";
 import Details from "../details";
 import Seasons from "../seasons";
-import { CardGallerySkeleton } from "../skeletons";
 import DetailsSplash from "./details-splash";
 import { notFound } from "next/navigation";
-import LazyGallery from "../gallery/lazy-gallery";
 
 export default async function DetailsCard({
 	type,
@@ -26,38 +23,34 @@ export default async function DetailsCard({
 		<div className="space-y-6">
 			<DetailsSplash data={details} type={type} />
 			{type === "tv" && (
-				<Suspense
-					fallback={<CardGallerySkeleton title="Seasons" type="season" />}
-				>
-					<Seasons id={details.id} seasons={details.number_of_seasons} />
-				</Suspense>
+				<Seasons id={details.id} seasons={details.number_of_seasons} />
 			)}
 
-			<Suspense fallback={<CardGallerySkeleton title="Videos" type="video" />}>
-				<CardGalleryWrapper
+			{(details as any).videos && (
+				<CardGallery
 					title="Videos"
 					type="video"
-					url={`${type}/${details.id}/videos`}
+					data={(details as any).videos}
 				/>
-			</Suspense>
-			<Suspense
-				fallback={<CardGallerySkeleton title="Cast and Crew" type="credits" />}
-			>
-				<CardGalleryWrapper
+			)}
+			{(details as any).credits && (
+				<CardGallery
 					title="Cast and Crew"
 					type="credits"
-					url={`${type}/${details.id}/credits`}
+					data={(details as any).credits}
 				/>
-			</Suspense>
+			)}
 			<Details details={details} isAShow={type === "tv"} certification={certification} />
 			<div className="horizontal-padding">
 				<Separator />
 			</div>
-			<LazyGallery
-				title={`Recommendations for ${details.title || details.name}`}
-				type="poster"
-				url={`${type}/${details.id}/recommendations`}
-			/>
+			{(details as any).recommendations && (
+				<CardGallery
+					title={`Recommendations for ${details.title || details.name}`}
+					type="poster"
+					data={(details as any).recommendations}
+				/>
+			)}
 		</div>
 	);
 }

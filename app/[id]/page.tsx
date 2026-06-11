@@ -21,8 +21,16 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 	const itemId: string = parts[2];
 
 	try {
-		const res: DataListType = await fetchTMDBData(`${type}/${itemId}`);
-		const { name, tagline, backdrop_path, poster_path } = res;
+		const appendKeys = [
+			type === "tv" ? "content_ratings" : "release_dates",
+			"videos",
+			"credits",
+			"recommendations",
+		].join(",");
+		const res: DataDetailsType = await fetchTMDBData(
+			`${type}/${itemId}?append_to_response=${appendKeys}`,
+		);
+		const { tagline, backdrop_path, poster_path } = res;
 		const image = `https://image.tmdb.org/t/p/w300${
 			backdrop_path || poster_path
 		}`;
@@ -58,9 +66,14 @@ export default async function MovieDetails(props: Params) {
 	const type: string = parts[0];
 	const itemId: string = parts[2];
 
-	const appendKey = type === "tv" ? "content_ratings" : "release_dates";
+	const appendKeys = [
+		type === "tv" ? "content_ratings" : "release_dates",
+		"videos",
+		"credits",
+		"recommendations",
+	].join(",");
 	const details: DataDetailsType = await fetchTMDBData(
-		`${type}/${itemId}?append_to_response=${appendKey}`,
+		`${type}/${itemId}?append_to_response=${appendKeys}`,
 	);
 
 	let certification: string | undefined;
