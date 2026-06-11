@@ -78,10 +78,12 @@ function WatchedContent() {
 	if (authLoading || dataLoading) {
 		return (
 			<div className="horizontal-padding py-5 md:py-8">
-				<div className="h-8 w-32 bg-secondary rounded mb-4 animate-pulse" />
+				<div className="flex items-baseline gap-3 mb-4">
+					<div className="h-8 w-32 bg-secondary rounded animate-pulse" />
+				</div>
 				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
 					{Array.from({ length: 12 }).map((_, i) => (
-						<PosterCardSkeleton key={i} />
+						<PosterCardSkeleton key={i} className="w-full" />
 					))}
 				</div>
 			</div>

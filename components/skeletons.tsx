@@ -3,38 +3,45 @@ import { IoChevronForward } from "react-icons/io5";
 import { Separator } from "./ui/separator";
 import { Skeleton } from "./ui/skeleton";
 
-export function PosterCardSkeleton() {
+export function PosterCardSkeleton({ className }: { className?: string }) {
 	return (
-		<div className="shadow-sm space-y-2">
-			<Skeleton className="w-[220px] md:w-[232px] lg:w-[256px] xl:w-[272px] aspect-[1/1.5] rounded-none" />
-			<Skeleton className="w-14 h-3" />
+		<div className={className ?? "w-55 md:w-58 lg:w-[256px] xl:w-68"}>
+			<Skeleton className="w-full aspect-[1/1.5] mb-2 shadow-sm rounded-none" />
+			<Skeleton className="w-24 h-4" />
 		</div>
 	);
 }
 
-export function VideoCardSkeleton() {
+export function VideoCardSkeleton({ className }: { className?: string }) {
 	return (
-		<div className="shadow-sm space-y-2">
-			<Skeleton className="w-[360px] md:w-[372px] xl:w-[384px] aspect-video rounded-md" />
-			<Skeleton className="w-14 h-3" />
+		<div className={className ?? "w-[360px] md:w-[372px] xl:w-[384px]"}>
+			<Skeleton className="w-full aspect-video mb-2 shadow-sm rounded-md" />
+			<Skeleton className="w-24 h-4" />
 		</div>
 	);
 }
 
-export function SeasonCardSkeleton() {
+export function SeasonCardSkeleton({ className }: { className?: string }) {
 	return (
-		<div className="shadow-sm space-y-2">
-			<Skeleton className="w-[332px] md:w-[348px] xl:w-[356px] aspect-video rounded-md" />
-			<Skeleton className="w-14 h-3" />
+		<div className={className ?? "w-[332px] md:w-[348px] xl:w-[356px]"}>
+			<Skeleton className="w-full aspect-video mb-2 shadow-sm rounded-md" />
+			<div className="w-full flex flex-col gap-1">
+				<Skeleton className="w-24 h-4" />
+				<Skeleton className="w-full h-3" />
+				<Skeleton className="w-2/3 h-3" />
+			</div>
 		</div>
 	);
 }
 
-export function CreditsCardSkeleton() {
+export function CreditsCardSkeleton({ className }: { className?: string }) {
 	return (
-		<div className="flex flex-col items-center shadow-sm space-y-2">
-			<Skeleton className="w-24 md:w-28 xl:w-32 h-24 md:h-28 xl:h-32 aspect-square rounded-full" />
-			<Skeleton className="w-16 h-3" />
+		<div className={className ?? "flex flex-col items-center"}>
+			<Skeleton className="w-24 md:w-28 xl:w-32 h-24 md:h-28 xl:h-32 aspect-square rounded-full shadow-sm" />
+			<div className="mt-2 w-24 md:w-28 xl:w-32 flex flex-col items-center gap-1">
+				<Skeleton className="w-20 h-4" />
+				<Skeleton className="w-16 h-3" />
+			</div>
 		</div>
 	);
 }
@@ -65,10 +72,10 @@ export function SearchSuggestionsCardSkeleton() {
 	return (
 		<div className="h-16 w-full bg-background">
 			<div className="flex gap-2 p-2 items-center justify-start">
-				<Skeleton className="w-20 aspect-video" />
+				<Skeleton className="w-20 aspect-video rounded-md border-2 border-transparent" />
 				<div>
-					<Skeleton className="w-16 h-3" />
-					<Skeleton className="mt-1 w-6 h-3" />
+					<Skeleton className="w-24 h-3" />
+					<Skeleton className="mt-1 w-8 h-3" />
 				</div>
 			</div>
 			<Separator />
