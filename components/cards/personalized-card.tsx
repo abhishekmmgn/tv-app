@@ -1,26 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getSplashImageUrl } from "@/lib/usePerfectImage";
+import { SplashImage } from "@/lib/usePerfectImage";
 import { generateLink } from "@/lib/utils";
 import type { DataListType } from "@/types";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function PersonalizedCard({ data }: { data: DataListType }) {
 	const name = data?.name || data?.title;
 	const link = generateLink(data.media_type, name as string, data.id);
-	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
 	return (
 		<div className="relative w-full aspect-9/16 max-h-[90vh] sm:aspect-video bg-secondary rounded-md animate-fade-in-stagger">
 			<div className="animate-fade-in">
-				<Image
-					src={imageUrl}
+				<SplashImage
+					backdrop_path={data?.backdrop_path}
+					poster_path={data?.poster_path}
 					alt={`Poster of ${name}`}
-					fill
-					loading="lazy"
-					sizes="100vw"
-					className="object-cover rounded-md"
+					className="absolute inset-0 h-full w-full object-cover rounded-md"
 				/>
 			</div>
 			<div className="z-10 absolute bottom-0 inset-x-0 h-[75%] bg-linear-to-b from-transparent to-black flex flex-col justify-end items-center horizontal-padding pb-6 sm:pb-10 rounded-b-md">

@@ -1,12 +1,11 @@
 "use client";
 
 import handleShare from "@/lib/handleShare";
-import { getSplashImageUrl } from "@/lib/usePerfectImage";
+import { SplashImage } from "@/lib/usePerfectImage";
 import { generateLink } from "@/lib/utils";
 import { UserAuth } from "@/providers/auth-provider";
 import type { DataDetailsType, ItemType } from "@/types";
 import { IoArrowForward, IoCheckmark, IoShareOutline } from "react-icons/io5";
-import Image from "next/image";
 import { useEffect, useState, useOptimistic, useTransition } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
@@ -33,7 +32,6 @@ export default function DetailsSplash({
 
 	const name = (data.title || data.name) as string;
 	const link = generateLink(type, name, data.id);
-	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -72,13 +70,12 @@ export default function DetailsSplash({
 	return (
 		<div className="w-full relative aspect-9/16 max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary animate-fade-in-stagger">
 			<div className="animate-fade-in">
-				<Image
-					src={imageUrl}
-					alt={`Poster of ${data?.title}`}
-					fill
-					priority
-					sizes="100vw"
-					className="object-cover"
+				<SplashImage
+					backdrop_path={data?.backdrop_path}
+					poster_path={data?.poster_path}
+					alt={`Poster of ${name}`}
+					fetchPriority="high"
+					className="absolute inset-0 h-full w-full object-cover"
 				/>
 				<div className="z-10 absolute bottom-0 inset-x-0 h-[70%] bg-linear-to-b from-black/0 to-black flex flex-col justify-end items-center sm:items-start horizontal-padding pb-6 sm:pb-10">
 					<h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-2">
