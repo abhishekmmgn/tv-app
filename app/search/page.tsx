@@ -6,21 +6,23 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 type Props = {
-	searchParams: { [key: string]: string | string[] | undefined };
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export function generateMetadata({ searchParams }: Props): Metadata {
-	const categoryTerm = searchParams.category?.toString();
-	const term = searchParams.query?.toString();
-	return {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+    const searchParams = await props.searchParams;
+    const categoryTerm = searchParams.category?.toString();
+    const term = searchParams.query?.toString();
+    return {
 		title: term || categoryTerm ? `Search: ${term || categoryTerm}` : "Search",
 	};
 }
 
-export default function SearchPage({ searchParams }: Props) {
-	const categoryTerm = searchParams.category?.toString();
-	const term = searchParams.query?.toString();
-	return (
+export default async function SearchPage(props: Props) {
+    const searchParams = await props.searchParams;
+    const categoryTerm = searchParams.category?.toString();
+    const term = searchParams.query?.toString();
+    return (
 		<>
 			<div className="pt-5 px-5 space-y-3 sm:hidden">
 				<h1 className="text-2xl font-bold">Search</h1>
