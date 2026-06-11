@@ -1,5 +1,5 @@
 import { CardType } from "@/types";
-import { ChevronRight } from "lucide-react";
+import { IoChevronForward } from "react-icons/io5";
 import { Separator } from "./ui/separator";
 import { Skeleton } from "./ui/skeleton";
 
@@ -88,7 +88,7 @@ export function CardGallerySkeleton({
 		<div className="relative px-5 md:px-8 xl:px-12 group">
 			<h1 className="font-semibold text-lg mb-3 text-neutral-200 capitalize">
 				<span>{title}</span>
-				<ChevronRight className="w-4 h-4 inline" />
+				<IoChevronForward className="w-4 h-4 inline" />
 			</h1>
 			<div>
 				<div className="flex gap-5 overflow-x-auto whitespace-nowrap no-scrollbar">

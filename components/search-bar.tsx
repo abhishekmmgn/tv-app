@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { IoSearch } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -40,9 +40,9 @@ export default function SearchBar() {
 
 	return (
 		<div className="relative w-full">
-			<Search className="absolute top-[9px] left-2 w-5 h-5 text-neutral-500 md:w-4 md:h-4" />
+			<IoSearch className="absolute top-[9px] left-2 w-5 h-5 text-neutral-500 md:w-4 md:h-4" />
 			<Input
-				placeholder="Search"
+				placeholder="IoSearch"
 				type="search"
 				onChange={(e) => {
 					handleSearch(e.target.value);

@@ -1,7 +1,7 @@
 "use client";
 
 import { UserAuth } from "@/providers/auth-provider";
-import { Search } from "lucide-react";
+import { IoSearch } from "react-icons/io5";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import AuthModal from "./modals/auth-modal";
@@ -21,7 +21,7 @@ export default function Navbar() {
 			<div className="w-1/3 flex items-center justify-end gap-5 sm:w-1/2 sm:gap-3">
 				<>
 					{pathname !== "/search" && (
-						<Search
+						<IoSearch
 							onClick={() => router.push("/search")}
 							className="text-foreground w-5 h-5 hover:cursor-pointer sm:hidden"
 						/>

@@ -13,7 +13,7 @@ export default async function DefaultSearch() {
 			<h1 className="font-semibold text-lg mb-4 text-neutral-200">
 				Explore Popular Films, Series, and More
 			</h1>
-			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 3xl:grid-cols-6">
 				{categories.map((category: CategoryCardType) => (
 					<CategoryCard
 						title={category.title}
@@ -23,7 +23,7 @@ export default async function DefaultSearch() {
 						key={`${category.title}-${category.from}-${category.to}`}
 					/>
 				))}
-				{data?.results.slice(10).map((item: any, index: number) => (
+				{data?.results.slice(20).map((item: any, index: number) => (
 					<SuggestionCard
 						id={item.id}
 						title={item.title || item.name}

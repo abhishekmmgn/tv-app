@@ -1,5 +1,3 @@
-import axios, { AxiosError } from "axios";
-
 const requests = {
 	fetchTrendingToday: `/trending/all/day`,
 	fetchTrendingWeekly: `/trending/all/week`,
@@ -39,29 +37,31 @@ const requests = {
 };
 
 const fetchTMDBData = async (endpoint: string) => {
-	const options = {
-		method: "GET",
-		url: `https://api.themoviedb.org/3/${endpoint}`,
-		headers: {
-			accept: "application/json",
-			Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_AUTH_TOKEN}`,
-		},
-	};
-
 	try {
-		const response = await axios.request(options);
-		return response.data;
-	} catch (error) {
-		const err = error as AxiosError;
-		if (err.response && err.response.status === 401) {
+		const response = await fetch(`https://api.themoviedb.org/3/${endpoint}`, {
+			headers: {
+				accept: "application/json",
+				Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_AUTH_TOKEN}`,
+			},
+		});
+
+		if (response.status === 401) {
 			console.error("Invalid API key.");
-		} else if (err.response && err.response.status === 404) {
-			return null;
-		} else {
-			console.error(err.message);
+			return undefined;
 		}
+		if (response.status === 404) {
+			return null;
+		}
+		if (!response.ok) {
+			console.error(`TMDB request failed: ${response.status}`);
+			return undefined;
+		}
+
+		return response.json();
+	} catch (error) {
+		console.error(error);
+		return undefined;
 	}
-	return undefined;
 };
 
 export { requests, fetchTMDBData };

@@ -11,7 +11,7 @@ import { addToWatchlist, isInWatchlist } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import type { DataDetailsType, ItemType } from "@/types";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Share } from "lucide-react";
+import { IoArrowForward, IoCheckmark, IoShareOutline } from "react-icons/io5";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -20,7 +20,10 @@ import { Button } from "../ui/button";
 export default function DetailsSplash({
 	data,
 	type,
-}: { data: DataDetailsType; type: ItemType }) {
+}: {
+	data: DataDetailsType;
+	type: ItemType;
+}) {
 	const [watched, setWatched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
 	const { user } = UserAuth();
@@ -90,11 +93,15 @@ export default function DetailsSplash({
 					</p>
 					<div className="space-y-2">
 						{data.homepage && (
-							<Button size="lg" className="w-64 flex gap-2" asChild>
-								<a href={data.homepage} target="_blank" rel="noreferrer">
-									Watch
-									<ArrowRight className="w-4 h-4 -rotate-45" />
-								</a>
+							<Button
+								size="lg"
+								className="w-64 flex gap-2"
+								render={
+									<a href={data.homepage} target="_blank" rel="noreferrer" />
+								}
+							>
+								Watch
+								<IoArrowForward className="w-4 h-4 -rotate-45" />
 							</Button>
 						)}
 						{!watched && (
@@ -105,12 +112,12 @@ export default function DetailsSplash({
 								onClick={handleAddToWatchlist}
 							>
 								Mark as Watched
-								<Check className="w-4 h-4" />
+								<IoCheckmark className="w-4 h-4" />
 							</Button>
 						)}
 						<Button size="lg" className="w-64 flex gap-2" onClick={handleClick}>
-							Share
-							<Share className="w-4 h-4" />
+							IoShareOutline
+							<IoShareOutline className="w-4 h-4" />
 						</Button>
 					</div>
 				</div>
