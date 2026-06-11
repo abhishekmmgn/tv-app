@@ -1,9 +1,9 @@
 "use client";
 import { useInView } from "@/lib/useInView";
 import { useState, useEffect } from "react";
-import CardGallery from "./card-gallery"; // not the wrapper!
+import CardGallery from "./card-gallery";
 import { CardGallerySkeleton } from "../skeletons";
-import { fetchTMDBData } from "@/lib/requests";
+import { fetchTMDBDataClient } from "@/lib/requests";
 import { CardType } from "@/types";
 
 export default function LazyGallery({
@@ -27,7 +27,7 @@ export default function LazyGallery({
 	useEffect(() => {
 		if (show && !data && type !== "category") {
 			setLoading(true);
-			fetchTMDBData(url)
+			fetchTMDBDataClient(url)
 				.then((res) => setData(res))
 				.finally(() => setLoading(false));
 		}

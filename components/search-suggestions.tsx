@@ -1,7 +1,7 @@
 "use client";
 
 import interleaveResults from "@/lib/interleaveResults";
-import { fetchTMDBData } from "@/lib/requests";
+import { fetchTMDBDataClient } from "@/lib/requests";
 import { BasicDataType } from "@/types";
 import { useEffect, useState } from "react";
 import SearchSuggestionsCard from "./cards/search-suggestions-card";
@@ -13,14 +13,15 @@ export default function SearchSuggestions(props: { searchQuery: string }) {
 
 	useEffect(() => {
 		async function fetchSearchResults() {
+			const q = encodeURIComponent(props.searchQuery);
 			const promises = [
-				fetchTMDBData(`search/movie?query=${props.searchQuery}`),
-				fetchTMDBData(`search/tv?query=${props.searchQuery}`),
+				fetchTMDBDataClient(`search/movie?query=${q}`),
+				fetchTMDBDataClient(`search/tv?query=${q}`),
 			];
 			const [movieData, tvData] = await Promise.all(promises);
 			const interleavedData = interleaveResults(
-				movieData.results,
-				tvData.results,
+				movieData?.results,
+				tvData?.results,
 			);
 			setData(interleavedData);
 			setIsLoading(false);

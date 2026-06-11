@@ -71,4 +71,20 @@ const fetchTMDBData = async (
 	}
 };
 
+export async function fetchTMDBDataClient(endpoint: string) {
+	try {
+		const response = await fetch(`/api/tmdb/${endpoint}`);
+
+		if (!response.ok) {
+			console.error(`TMDB request failed: ${response.status}`);
+			return undefined;
+		}
+
+		return response.json();
+	} catch (error) {
+		console.error(error);
+		return undefined;
+	}
+}
+
 export { requests, fetchTMDBData };

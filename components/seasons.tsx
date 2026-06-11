@@ -8,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { fetchTMDBData } from "@/lib/requests";
+import { fetchTMDBDataClient } from "@/lib/requests";
 import { useEffect, useState } from "react";
 import CardGallery from "./gallery/card-gallery";
 import { GalleryType } from "@/types";
@@ -22,8 +22,8 @@ export default function Seasons({
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const res = await fetchTMDBData(`tv/${id}/season/${currentSeason}`);
-			setData(res.episodes);
+			const res = await fetchTMDBDataClient(`tv/${id}/season/${currentSeason}`);
+			setData(res?.episodes ?? []);
 		};
 
 		fetchData();
