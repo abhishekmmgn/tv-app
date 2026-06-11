@@ -7,7 +7,7 @@ import type { BasicDataType } from "@/types";
 import { IoCheckmark, IoClose, IoShareOutline } from "react-icons/io5";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, useOptimistic, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import toast from "react-hot-toast";
 
 export default function PosterCard({

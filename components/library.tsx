@@ -3,7 +3,6 @@
 import { auth, db } from "@/firebase-config";
 import { fetchTMDBData } from "@/lib/requests";
 import type { ItemType } from "@/types";
-import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import CardGallery from "./gallery/card-gallery";
 import { CardGallerySkeleton } from "./skeletons";
@@ -14,10 +13,10 @@ export default function Library() {
 
 	async function fetchLibraryData() {
 		setLoading(true);
+		const { doc, getDoc } = await import("firebase/firestore");
 		const docSnap = await getDoc(doc(db, "users", auth?.currentUser?.uid!));
 
 		if (docSnap.exists()) {
-			console.log("Document data:", docSnap.data());
 			const returnedData: {
 				id: number;
 				type: ItemType;
@@ -28,7 +27,6 @@ export default function Library() {
 					const details = await fetchTMDBData(`${item.type}/${item.id}`);
 					items.push(details);
 				}
-				console.log("Items:", items);
 				setData(items);
 			}
 			setLoading(false);
@@ -41,8 +39,6 @@ export default function Library() {
 			fetchLibraryData();
 		}
 	}, [auth?.currentUser]);
-
-	console.log(data);
 
 	if (loading) {
 		return <CardGallerySkeleton title="Library" type="poster" />;

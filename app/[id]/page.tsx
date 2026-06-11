@@ -48,7 +48,6 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 			},
 		};
 	} catch (error) {
-		console.log("Not found? ", error);
 		return {
 			title: "Not found",
 			description: "The movie is not available or does not exist",
