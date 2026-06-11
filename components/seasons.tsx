@@ -30,20 +30,20 @@ export default function Seasons({
 	}, [id, currentSeason]);
 
 	return (
-		<div className="space-y-2">
+		<div className="space-y-2.5">
 			<Select
-				defaultValue="season-1"
+				defaultValue="Season 1"
 				onValueChange={(value) =>
-					setCurrentSeason(parseInt(value.split("-")[1]))
+					value && setCurrentSeason(parseInt(value.split(" ")[1]))
 				}
 			>
-				<SelectTrigger className="w-[180px] px-5 md:px-8 xl:px-12">
+				<SelectTrigger className="w-45 left-margin">
 					<SelectValue placeholder="Season" />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
 						{Array.from({ length: seasons }, (_, i) => (
-							<SelectItem key={i} value={`season-${i + 1}`}>
+							<SelectItem key={i} value={`Season ${i + 1}`}>
 								Season {i + 1}
 							</SelectItem>
 						))}

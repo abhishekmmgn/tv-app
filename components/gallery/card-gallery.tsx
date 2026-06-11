@@ -20,7 +20,7 @@ export default function CardGallery({
 	type: CardType;
 }) {
 	return (
-		<div className="relative px-5 md:px-8 xl:px-12 group">
+		<div className="relative horizontal-padding group">
 			{title && (
 				<h1 className="font-semibold text-lg mb-3 text-neutral-200 capitalize">
 					<span>{title}</span>

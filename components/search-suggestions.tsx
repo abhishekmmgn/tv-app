@@ -1,3 +1,5 @@
+"use client";
+
 import interleaveResults from "@/lib/interleaveResults";
 import { fetchTMDBData } from "@/lib/requests";
 import { BasicDataType } from "@/types";

@@ -44,7 +44,7 @@ export default function HomeSplash({ data }: { data: DataListType }) {
 					className="object-cover"
 				/>
 			</motion.div>
-			<div className="z-10 absolute bottom-0 inset-x-0 h-[50%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center sm:items-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
+			<div className="z-10 absolute bottom-0 inset-x-0 h-[50%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center sm:items-start horizontal-padding pb-6 sm:pb-10">
 				<h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-1">
 					{name}
 				</h1>

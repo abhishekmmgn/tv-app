@@ -58,6 +58,27 @@ export default async function MovieDetails(props: Params) {
 	const type: string = parts[0];
 	const itemId: string = parts[2];
 
-	const details: DataDetailsType = await fetchTMDBData(`${type}/${itemId}`);
-	return <DetailsCard details={details} type={type as ItemType} />;
+	const appendKey = type === "tv" ? "content_ratings" : "release_dates";
+	const details: DataDetailsType = await fetchTMDBData(
+		`${type}/${itemId}?append_to_response=${appendKey}`,
+	);
+
+	let certification: string | undefined;
+	if (type === "tv") {
+		certification = (details as any).content_ratings?.results?.find(
+			(r: any) => r.iso_3166_1 === "US",
+		)?.rating;
+	} else {
+		certification = (details as any).release_dates?.results
+			?.find((r: any) => r.iso_3166_1 === "US")
+			?.release_dates?.find((d: any) => d.certification)?.certification;
+	}
+
+	return (
+		<DetailsCard
+			details={details}
+			type={type as ItemType}
+			certification={certification}
+		/>
+	);
 }

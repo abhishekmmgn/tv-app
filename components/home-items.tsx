@@ -26,7 +26,7 @@ export default function HomeItems({ popular }: { popular: DataListType[] }) {
 				</Suspense>
 			))}
 			<CardGalleryWrapper title="Explore by Category" type="category" url="" />
-			<div className="px-5 md:px-8 xl:px-12">
+			<div className="horizontal-padding">
 				<PersonalizedCard data={popular[0]} />
 			</div>
 			{secondHalf.map((item: PropsType, idx: number) => (
@@ -37,7 +37,7 @@ export default function HomeItems({ popular }: { popular: DataListType[] }) {
 					url={item.url}
 				/>
 			))}
-			<div className="px-5 md:px-8 xl:px-12">
+			<div className="horizontal-padding">
 				<PersonalizedCard data={popular[1]} />
 			</div>
 		</div>

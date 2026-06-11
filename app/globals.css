@@ -108,3 +108,16 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+@utility horizontal-padding {
+  @apply px-5 md:px-6 xl:px-8 2xl:px-12;
+}
+
+@utility horizontal-margin {
+  @apply mx-5 md:mx-6 xl:mx-8 2xl:mx-12;
+}
+
+@utility left-margin {
+  @apply ml-5 md:ml-6 xl:ml-8 2xl:ml-12;
+}
+

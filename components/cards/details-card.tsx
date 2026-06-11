@@ -13,9 +13,11 @@ import LazyGallery from "../gallery/lazy-gallery";
 export default async function DetailsCard({
 	type,
 	details,
+	certification,
 }: {
 	type: ItemType;
 	details: DataDetailsType;
+	certification?: string;
 }) {
 	if (!details) {
 		notFound();
@@ -47,8 +49,8 @@ export default async function DetailsCard({
 					url={`${type}/${details.id}/credits`}
 				/>
 			</Suspense>
-			<Details details={details} isAShow={type === "tv"} />
-			<div className="px-5 md:px-8 xl:px-12">
+			<Details details={details} isAShow={type === "tv"} certification={certification} />
+			<div className="horizontal-padding">
 				<Separator />
 			</div>
 			<LazyGallery

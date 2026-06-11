@@ -49,7 +49,7 @@ export function SuggestionsCardSkeleton() {
 
 export function DetailsSplashSkeleton() {
 	return (
-		<div className="w-full aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary grid items-end justify-center sm:justify-start px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10">
+		<div className="w-full aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary grid items-end justify-center sm:justify-start horizontal-padding pb-6 sm:pb-10">
 			<div className="flex flex-col gap-1 justify-center items-center sm:items-start w-[332px]">
 				<Skeleton className="w-32 h-5" />
 				<Skeleton className="mt-1 w-80 h-4" />
@@ -85,7 +85,7 @@ export function CardGallerySkeleton({
 }) {
 	const loadingArray = Array.from({ length: 10 }, (_, i) => i + 1);
 	return (
-		<div className="relative px-5 md:px-8 xl:px-12 group">
+		<div className="relative horizontal-padding group">
 			<h1 className="font-semibold text-lg mb-3 text-neutral-200 capitalize">
 				<span>{title}</span>
 				<IoChevronForward className="w-4 h-4 inline" />

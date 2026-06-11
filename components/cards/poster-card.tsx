@@ -6,9 +6,13 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import handleCopyLink from "@/lib/handleCopyLink";
+import handleShare from "@/lib/handleShare";
 import { generateLink } from "@/lib/utils";
-import { addToWatchlist, isInWatchlist } from "@/lib/watchlist";
+import {
+	addToWatchlist,
+	isInWatchlist,
+	removeFromWatchlist,
+} from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import type { BasicDataType } from "@/types";
 import {
@@ -19,12 +23,23 @@ import {
 } from "react-icons/io5";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useOptimistic, useTransition } from "react";
 import toast from "react-hot-toast";
 
-export default function PosterCard({ id, image, title, type }: BasicDataType) {
+export default function PosterCard({
+	id,
+	image,
+	title,
+	type,
+	className,
+}: BasicDataType & { className?: string }) {
 	const { user } = UserAuth();
 	const [watched, setWatched] = useState(false);
+	const [optimisticWatched, setOptimisticWatched] = useOptimistic(
+		watched,
+		(state, newWatched: boolean) => newWatched,
+	);
+	const [isPending, startTransition] = useTransition();
 
 	const link = generateLink(type, title, id);
 
@@ -38,33 +53,45 @@ export default function PosterCard({ id, image, title, type }: BasicDataType) {
 		checkWatchlist();
 	}, [user, id]);
 
-	async function handleAddToWatchlist(event: React.MouseEvent<HTMLElement>) {
+	const handleToggleWatchlist = (event: React.MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
-		if (user) {
-			try {
-				await addToWatchlist(id, user.uid, type);
-				toast.success(`Added to your watchlist.`);
-				setWatched(true);
-			} catch (error) {
-				toast.error(`Failed to add.`);
-			}
-		} else {
+		event.preventDefault();
+		if (!user) {
 			toast.error("You must be logged in.");
+			return;
 		}
-	}
-	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-		const success = handleCopyLink(event, link);
-		if (success) {
+
+		const nextWatched = !watched;
+		startTransition(async () => {
+			setOptimisticWatched(nextWatched);
+			try {
+				if (nextWatched) {
+					await addToWatchlist(id, user.uid, type);
+					toast.success(`Added to your watchlist.`);
+				} else {
+					await removeFromWatchlist(id, user.uid, type);
+					toast.success(`Removed from your watchlist.`);
+				}
+				setWatched(nextWatched);
+			} catch (error) {
+				toast.error("Failed to update watchlist.");
+			}
+		});
+	};
+
+	const handleClick = async (event: React.MouseEvent<HTMLElement>) => {
+		event.stopPropagation();
+		event.preventDefault();
+		const { copied } = await handleShare(event, link, title);
+		if (copied) {
 			toast.success("Link copied successfully");
-		} else {
-			toast.error("Failed to copy link");
 		}
 	};
 
 	return (
-		<div className="w-[220px] md:w-[232px] lg:w-[256px] xl:w-[272px]">
+		<div className={className ?? "w-55 md:w-58 lg:w-[256px] xl:w-68"}>
 			<Link href={link} scroll={true}>
-				<div className="relative bg-secondary w-full aspect-[1/1.5] mb-2 shadow-sm group">
+				<div className="relative bg-secondary w-full aspect-1/1.5 mb-2 shadow-sm group">
 					<Image
 						src={image}
 						fill
@@ -74,35 +101,46 @@ export default function PosterCard({ id, image, title, type }: BasicDataType) {
 						className="hover:brightness-90"
 					/>
 					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<div className="z-10 absolute right-3 bottom-3 w-7 h-7 bg-white opacity-80 backdrop-blur-sm shadow-sm rounded-full flex items-center justify-center">
-								<IoEllipsisHorizontal
-									className="text-accent w-6 h-6"
-									aria-label="Options"
-								/>
-							</div>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-48 ml-48 -mt-2 bg-background backdrop-blur-sm">
-							<Link href={link}>
-								<DropdownMenuItem className="space-x-4 flex justify-between">
-									<div>View Details</div>
-									<IoChevronForward className="w-4 h-4" />
-								</DropdownMenuItem>
-							</Link>
-							{!watched && (
-								<DropdownMenuItem
-									className="space-x-4 flex justify-between"
-									onClick={handleAddToWatchlist}
+						<DropdownMenuTrigger
+							render={
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										e.preventDefault();
+									}}
+									className="z-10 absolute right-3 bottom-3 w-7 h-7 bg-white opacity-80 backdrop-blur-sm shadow-sm rounded-full flex items-center justify-center cursor-pointer outline-none"
 								>
-									<div>Mark as Watched</div>
+									<IoEllipsisHorizontal
+										className="text-blue-500 w-6 h-6"
+										aria-label="Options"
+									/>
+								</button>
+							}
+						/>
+						<DropdownMenuContent
+							align="end"
+							className="w-56 bg-background backdrop-blur-sm"
+						>
+							<DropdownMenuItem
+								className="space-x-4 flex justify-between"
+								onClick={handleToggleWatchlist}
+								disabled={isPending}
+							>
+								<div>
+									{optimisticWatched ? "Mark as Unwatched" : "Mark as Watched"}
+								</div>
+								{optimisticWatched ? (
+									<IoCheckmark className="w-4 h-4 text-emerald-500" />
+								) : (
 									<IoCheckmark className="w-4 h-4" />
-								</DropdownMenuItem>
-							)}
+								)}
+							</DropdownMenuItem>
 							<DropdownMenuItem
 								className="space-x-4 flex justify-between"
 								onClick={handleClick}
 							>
-								<p>IoShareOutline</p>
+								<p>Share</p>
 								<IoShareOutline className="w-4 h-4" />
 							</DropdownMenuItem>
 						</DropdownMenuContent>

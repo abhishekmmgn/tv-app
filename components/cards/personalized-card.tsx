@@ -32,7 +32,7 @@ export default function PersonalizedCard({ data }: { data: DataListType }) {
 					className="object-cover rounded-md"
 				/>
 			</motion.div>
-			<div className="z-10 absolute bottom-0 inset-x-0 h-[75%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center px-5 sm:px-8 xl:px-12 pb-6 sm:pb-10 rounded-b-md">
+			<div className="z-10 absolute bottom-0 inset-x-0 h-[75%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center horizontal-padding pb-6 sm:pb-10 rounded-b-md">
 				<h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center line-clamp-1">
 					{data?.name || data?.title}
 				</h1>

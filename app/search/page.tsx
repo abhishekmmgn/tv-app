@@ -2,6 +2,7 @@ import DefaultSearch from "@/components/default-search";
 import SearchBar from "@/components/search-bar";
 import SearchResults from "@/components/search-results";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 type Props = {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -20,17 +21,20 @@ export default async function SearchPage(props: Props) {
 	const searchParams = await props.searchParams;
 	const categoryTerm = searchParams.category?.toString();
 	const term = searchParams.query?.toString();
+	const page = Number(searchParams.page) || 1;
 	return (
 		<>
-			<div className="pt-5 px-5 space-y-3 sm:hidden">
+			<div className="pt-5 horizontal-padding space-y-3 sm:hidden">
 				<h1 className="text-2xl font-bold">Search</h1>
-				<SearchBar />
+				<Suspense>
+					<SearchBar />
+				</Suspense>
 			</div>
 			{term || categoryTerm ? (
 				<>
-					{term && <SearchResults term={term} queryType="regular" />}
+					{term && <SearchResults term={term} queryType="regular" page={page} />}
 					{categoryTerm && (
-						<SearchResults term={categoryTerm} queryType="category" />
+						<SearchResults term={categoryTerm} queryType="category" page={page} />
 					)}
 				</>
 			) : (

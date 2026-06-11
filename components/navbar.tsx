@@ -7,14 +7,16 @@ import { usePathname, useRouter } from "next/navigation";
 import AuthModal from "./modals/auth-modal";
 import SettingsModal from "./modals/settings-modal";
 import SearchBar from "./search-bar";
+import { Suspense } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export default function Navbar() {
-	const { user } = UserAuth();
+	const { user, isLoading } = UserAuth();
 	const pathname = usePathname();
 	const router = useRouter();
 
 	return (
-		<div className="z-50 fixed top-0 inset-x-0 w-full h-14 bg-black px-5 flex items-center justify-between border-b border-b-neutral-800 lg:px-8 xl:px-12">
+		<div className="z-50 fixed top-0 inset-x-0 w-full h-14 bg-black horizontal-padding flex items-center justify-between border-b border-b-neutral-800">
 			<Link href="/">
 				<h1 className="font-bold text-lg">TV</h1>
 			</Link>
@@ -34,10 +36,18 @@ export default function Navbar() {
 							}
 						}}
 					>
-						<SearchBar />
+						<Suspense>
+							<SearchBar />
+						</Suspense>
 					</div>
 				</>
-				{user ? <SettingsModal /> : <AuthModal />}
+				{isLoading ? (
+					<Skeleton className="w-9 h-9 rounded-full" />
+				) : user ? (
+					<SettingsModal />
+				) : (
+					<AuthModal />
+				)}
 			</div>
 		</div>
 	);

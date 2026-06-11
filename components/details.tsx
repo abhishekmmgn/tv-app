@@ -4,12 +4,14 @@ import { DataDetailsType } from "@/types";
 export default function Details({
 	details,
 	isAShow,
+	certification,
 }: {
 	details: DataDetailsType;
 	isAShow: boolean;
+	certification?: string;
 }) {
 	return (
-		<div className="mx-5 md:mx-8 xl:mx-12 p-5 bg-secondary rounded-lg flex flex-col gap-5">
+		<div className="horizontal-margin p-5 bg-secondary rounded-lg flex flex-col gap-5">
 			<div>
 				<h1 className="text-xl font-semibold md:text-2xl">
 					{details.title || details.name}
@@ -25,7 +27,7 @@ export default function Details({
 						<p className="font-medium text-secondary-foreground">
 							Orignal Title
 						</p>
-						<p className="text-sm text-accent capitalize">
+						<p className="text-sm text-muted-foreground capitalize">
 							{details.original_title}
 						</p>
 					</div>
@@ -35,7 +37,7 @@ export default function Details({
 						<p className="font-medium text-secondary-foreground">
 							Orignal Language
 						</p>
-						<p className="text-sm text-accent capitalize">
+						<p className="text-sm text-muted-foreground capitalize">
 							{details.original_language}
 						</p>
 					</div>
@@ -44,50 +46,56 @@ export default function Details({
 					<>
 						<div>
 							<p className="font-medium text-secondary-foreground">Seasons</p>
-							<p className="text-sm text-accent">{details.number_of_seasons}</p>
+							<p className="text-sm text-muted-foreground">{details.number_of_seasons}</p>
 						</div>
 					</>
 				)}
 				{details.runtime != null && (
 					<div>
 						<p className="font-medium text-secondary-foreground">Duration</p>
-						<p className="text-sm text-accent">{details.runtime} minutes</p>
+						<p className="text-sm text-muted-foreground">{details.runtime} minutes</p>
 					</div>
 				)}
 				{details.belongs_to_collection && (
 					<div>
 						<p className="font-medium text-secondary-foreground">Collection</p>
-						<p className="text-sm text-accent">
+						<p className="text-sm text-muted-foreground">
 							{details.belongs_to_collection.name}
 						</p>
 					</div>
 				)}
 				<div>
 					<p className="font-medium text-secondary-foreground">Genre</p>
-					<p className="text-sm text-accent">
+					<p className="text-sm text-muted-foreground">
 						{details.genres?.map((genre: any) => genre.name).join(", ")}
 					</p>
 				</div>
 				<div>
 					<p className="font-medium text-secondary-foreground">Status</p>
-					<p className="text-sm text-accent">{details.status}</p>
+					<p className="text-sm text-muted-foreground">{details.status}</p>
 				</div>
+				{certification && (
+					<div>
+						<p className="font-medium text-secondary-foreground">Age Rating</p>
+						<p className="text-sm text-muted-foreground">{certification}</p>
+					</div>
+				)}
 				<div>
 					<p className="font-medium text-secondary-foreground">Release Date</p>
-					<p className="text-sm text-accent">
+					<p className="text-sm text-muted-foreground">
 						{details.first_air_date || details.release_date}
 					</p>
 				</div>
 				{details.budget != null && details.budget !== 0 && (
 					<div>
 						<p className="font-medium text-secondary-foreground">Budget</p>
-						<p className="text-sm text-accent">${details.budget}</p>
+						<p className="text-sm text-muted-foreground">${details.budget}</p>
 					</div>
 				)}
 				{details.revenue != null && details.revenue !== 0 && (
 					<div>
 						<p className="font-medium text-secondary-foreground">Revenue</p>
-						<p className="text-sm text-accent">${details.revenue}</p>
+						<p className="text-sm text-muted-foreground">${details.revenue}</p>
 					</div>
 				)}
 				{details.production_companies && (
@@ -95,7 +103,7 @@ export default function Details({
 						<p className="font-medium text-secondary-foreground">
 							Production Companies
 						</p>
-						<p className="text-sm text-accent">
+						<p className="text-sm text-muted-foreground">
 							{details.production_companies
 								.map((company) => company.name)
 								.join(", ")}
@@ -107,7 +115,7 @@ export default function Details({
 						<p className="font-medium text-secondary-foreground">
 							Streaming Network
 						</p>
-						<p className="text-sm text-accent">
+						<p className="text-sm text-muted-foreground">
 							{details.networks.map((network: any) => network.name).join(", ")}
 						</p>
 					</div>

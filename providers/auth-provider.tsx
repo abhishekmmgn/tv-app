@@ -14,9 +14,10 @@ import { auth, db } from "../firebase-config";
 
 interface AuthContextType {
 	user: any;
+	isLoading: boolean;
 	googleSignIn: () => void;
 	logOut: () => void;
-	deleteAccount: () => void;
+	deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +28,7 @@ export const AuthContextProvider = ({
 	children: React.ReactNode;
 }) => {
 	const [user, setUser] = useState<User | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const googleSignIn = async () => {
 		const provider = new GoogleAuthProvider();
@@ -56,20 +58,36 @@ export const AuthContextProvider = ({
 		const user = auth.currentUser;
 		if (user) {
 			const userDocRef = doc(db, "users", user.uid);
+
+			// Backup the user's data first
+			const userDocSnap = await getDoc(userDocRef);
+			const userData = userDocSnap.data();
+
+			// Delete data
 			await deleteDoc(userDocRef);
-			await deleteUser(user);
+
+			try {
+				// Attempt to delete the account
+				await deleteUser(user);
+			} catch (error) {
+				// If account deletion fails (e.g. requires-recent-login), restore the data
+				if (userData) await setDoc(userDocRef, userData);
+
+				throw error; // Pass the error up to the UI
+			}
 		}
 	};
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
 			setUser(currentUser);
+			setIsLoading(false);
 		});
 		return () => unsubscribe();
-	}, [user]);
+	}, []);
 
 	return (
-		<AuthContext.Provider value={{ user, googleSignIn, logOut, deleteAccount }}>
+		<AuthContext.Provider value={{ user, isLoading, googleSignIn, logOut, deleteAccount }}>
 			{children}
 		</AuthContext.Provider>
 	);

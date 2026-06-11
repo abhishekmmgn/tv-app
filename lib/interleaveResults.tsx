@@ -18,7 +18,7 @@ export default function interleaveResults(movies: any[], shows: any[]): any[] {
 			interleaved.push({
 				id: shows[i].id,
 				title: shows[i].name,
-				image: movies[i]?.poster_path || movies[i]?.backdrop_path,
+				image: shows[i]?.poster_path || shows[i]?.backdrop_path,
 				type: "tv",
 			});
 		}
