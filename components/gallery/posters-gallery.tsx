@@ -14,8 +14,8 @@ function perfectImage(posterPath: string, backdropPath: string) {
 export default function PosterCardGallery({ data }: { data: DataListType[] }) {
 	return (
 		<>
-			{data?.map((item: any, index: number) => (
-				<div key={index}>
+			{data?.map((item: any) => (
+				<div key={item.id}>
 					<PosterCard
 						image={perfectImage(item.poster_path, item.backdrop_path)}
 						id={item.id}

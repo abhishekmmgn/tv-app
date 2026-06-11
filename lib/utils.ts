@@ -7,5 +7,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateLink(type: ItemType, name: string, id: number): string {
-	return `${type}-${name.replace(/[^a-zA-Z0-9]/g, "")}-${id}`;
+	return `/${type}-${name.replace(/[^a-zA-Z0-9]/g, "")}-${id}`;
 }

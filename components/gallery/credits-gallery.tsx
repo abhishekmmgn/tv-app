@@ -8,8 +8,8 @@ export default function CreditsGallery({ data }: { data: CreditsListType }) {
 	];
 	return (
 		<>
-			{list?.slice(0, 20).map((item: CastProfileType, index: number) => (
-				<div key={index}>
+			{list?.slice(0, 20).map((item: CastProfileType) => (
+				<div key={`${item.name}-${item.character || item.job}`}>
 					<CastProfile
 						profile_path={
 							item?.profile_path
