@@ -2,11 +2,6 @@
 
 import handleShare from "@/lib/handleShare";
 import { generateLink } from "@/lib/utils";
-import {
-	addToWatchlist,
-	isInWatchlist,
-	removeFromWatchlist,
-} from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import type { BasicDataType } from "@/types";
 import { IoCheckmark, IoClose, IoShareOutline } from "react-icons/io5";
@@ -26,25 +21,15 @@ export default function PosterCard({
 	className?: string;
 	onToggle?: (id: number, watched: boolean) => void;
 }) {
-	const { user } = UserAuth();
-	const [watched, setWatched] = useState(false);
+	const { user, isInWatchlist, addToWatchlist, removeFromWatchlist } =
+		UserAuth();
 	const [optimisticWatched, setOptimisticWatched] = useOptimistic(
-		watched,
+		isInWatchlist(id),
 		(state, newWatched: boolean) => newWatched,
 	);
 	const [isPending, startTransition] = useTransition();
 
 	const link = generateLink(type, title, id);
-
-	useEffect(() => {
-		const checkWatchlist = async () => {
-			if (user) {
-				const result = await isInWatchlist(id, user.uid);
-				setWatched(result);
-			}
-		};
-		checkWatchlist();
-	}, [user, id]);
 
 	const handleToggleWatchlist = (event: React.MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
@@ -54,18 +39,17 @@ export default function PosterCard({
 			return;
 		}
 
-		const nextWatched = !watched;
+		const nextWatched = !optimisticWatched;
 		startTransition(async () => {
 			setOptimisticWatched(nextWatched);
 			try {
 				if (nextWatched) {
-					await addToWatchlist(id, user.uid, type);
+					await addToWatchlist(id, type as "movie" | "tv");
 					toast.success(`Added to your watchlist.`);
 				} else {
-					await removeFromWatchlist(id, user.uid, type);
+					await removeFromWatchlist(id);
 					toast.success(`Removed from your watchlist.`);
 				}
-				setWatched(nextWatched);
 				if (onToggle) onToggle(id, nextWatched);
 			} catch (error) {
 				toast.error("Failed to update watchlist.");

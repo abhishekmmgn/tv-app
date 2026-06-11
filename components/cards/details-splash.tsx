@@ -7,11 +7,6 @@ import {
 	fadeInWrapperStat,
 	generateLink,
 } from "@/lib/utils";
-import {
-	addToWatchlist,
-	isInWatchlist,
-	removeFromWatchlist,
-} from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import type { DataDetailsType, ItemType } from "@/types";
 import { motion } from "framer-motion";
@@ -28,27 +23,22 @@ export default function DetailsSplash({
 	data: DataDetailsType;
 	type: ItemType;
 }) {
-	const [watched, setWatched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
+	const {
+		user,
+		isInWatchlist,
+		addToWatchlist,
+		removeFromWatchlist,
+	} = UserAuth();
 	const [optimisticWatched, setOptimisticWatched] = useOptimistic(
-		watched,
+		isInWatchlist(data.id),
 		(state, newWatched: boolean) => newWatched,
 	);
 	const [isPending, startTransition] = useTransition();
-	const { user } = UserAuth();
 
 	const name = (data.title || data.name) as string;
 	const link = generateLink(type, name, data.id);
 	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
-
-	useEffect(() => {
-		if (user) {
-			isInWatchlist(data.id, user?.uid).then((result) => {
-				setWatched(result);
-			});
-			console.log(user);
-		}
-	}, [user, data.id]);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -61,20 +51,18 @@ export default function DetailsSplash({
 			return;
 		}
 
-		const nextWatched = !watched;
+		const nextWatched = !optimisticWatched;
 		startTransition(async () => {
 			setOptimisticWatched(nextWatched);
 			try {
 				if (nextWatched) {
-					await addToWatchlist(data.id, user.uid, type);
+					await addToWatchlist(data.id, type as "movie" | "tv");
 					toast.success(`Added to your watchlist.`);
 				} else {
-					await removeFromWatchlist(data.id, user.uid, type);
+					await removeFromWatchlist(data.id);
 					toast.success(`Removed from your watchlist.`);
 				}
-				setWatched(nextWatched);
 			} catch (error) {
-				console.log(error);
 				toast.error("Failed to update watchlist.");
 			}
 		});
