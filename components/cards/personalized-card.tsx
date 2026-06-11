@@ -2,13 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { getSplashImageUrl } from "@/lib/usePerfectImage";
-import {
-	fadeInWrapperParent,
-	fadeInWrapperStat,
-	generateLink,
-} from "@/lib/utils";
+import { generateLink } from "@/lib/utils";
 import type { DataListType } from "@/types";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,13 +12,8 @@ export default function PersonalizedCard({ data }: { data: DataListType }) {
 	const link = generateLink(data.media_type, name as string, data.id);
 	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
 	return (
-		<motion.div
-			variants={fadeInWrapperParent}
-			initial="hidden"
-			animate="show"
-			className="relative w-full aspect-[9/16] max-h-[90vh] sm:aspect-video bg-secondary rounded-md"
-		>
-			<motion.div variants={fadeInWrapperStat}>
+		<div className="relative w-full aspect-[9/16] max-h-[90vh] sm:aspect-video bg-secondary rounded-md animate-fade-in-stagger">
+			<div className="animate-fade-in">
 				<Image
 					src={imageUrl}
 					alt={`Poster of ${name}`}
@@ -32,7 +22,7 @@ export default function PersonalizedCard({ data }: { data: DataListType }) {
 					sizes="100vw"
 					className="object-cover rounded-md"
 				/>
-			</motion.div>
+			</div>
 			<div className="z-10 absolute bottom-0 inset-x-0 h-[75%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center horizontal-padding pb-6 sm:pb-10 rounded-b-md">
 				<h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center line-clamp-1">
 					{data?.name || data?.title}
@@ -46,6 +36,6 @@ export default function PersonalizedCard({ data }: { data: DataListType }) {
 					</Button>
 				</Link>
 			</div>
-		</motion.div>
+		</div>
 	);
 }

@@ -121,3 +121,36 @@
   @apply ml-5 md:ml-6 xl:ml-8 2xl:ml-12;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.animate-fade-in-stagger > * {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.animate-fade-in-stagger > :nth-child(1) {
+  animation-delay: 0s;
+}
+
+.animate-fade-in-stagger > :nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.animate-fade-in-stagger > :nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.animate-fade-in-stagger > :nth-child(4) {
+  animation-delay: 0.3s;
+}
+

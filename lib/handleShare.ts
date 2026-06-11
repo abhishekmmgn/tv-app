@@ -26,15 +26,8 @@ export default async function handleShare(
 			if (error instanceof Error && error.name === "AbortError") {
 				return { shared: false, copied: false };
 			}
-			// For any other sharing errors, fall back to copying the link
 		}
 	}
 
-	// Fallback: Copy link to clipboard
-	try {
-		await navigator.clipboard.writeText(shareUrl);
-		return { shared: false, copied: true };
-	} catch (error) {
-		return { shared: false, copied: false };
-	}
+	return { shared: false, copied: false };
 }

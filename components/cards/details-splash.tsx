@@ -2,14 +2,9 @@
 
 import handleShare from "@/lib/handleShare";
 import { getSplashImageUrl } from "@/lib/usePerfectImage";
-import {
-	fadeInWrapperParent,
-	fadeInWrapperStat,
-	generateLink,
-} from "@/lib/utils";
+import { generateLink } from "@/lib/utils";
 import { UserAuth } from "@/providers/auth-provider";
 import type { DataDetailsType, ItemType } from "@/types";
-import { motion } from "framer-motion";
 import { IoArrowForward, IoCheckmark, IoShareOutline } from "react-icons/io5";
 import Image from "next/image";
 import { useEffect, useState, useOptimistic, useTransition } from "react";
@@ -75,13 +70,8 @@ export default function DetailsSplash({
 		setDisabled(false);
 	};
 	return (
-		<motion.div
-			variants={fadeInWrapperParent}
-			initial="hidden"
-			animate="show"
-			className="w-full relative aspect-9/16 max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary"
-		>
-			<motion.div variants={fadeInWrapperStat}>
+		<div className="w-full relative aspect-9/16 max-h-[90vh] sm:aspect-video sm:max-h-max bg-secondary animate-fade-in-stagger">
+			<div className="animate-fade-in">
 				<Image
 					src={imageUrl}
 					alt={`Poster of ${data?.title}`}
@@ -126,7 +116,7 @@ export default function DetailsSplash({
 						</Button>
 					</div>
 				</div>
-			</motion.div>
-		</motion.div>
+			</div>
+		</div>
 	);
 }

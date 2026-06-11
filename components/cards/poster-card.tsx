@@ -60,8 +60,7 @@ export default function PosterCard({
 	const handleClick = async (event: React.MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
 		event.preventDefault();
-		const { copied } = await handleShare(event, link, title);
-		if (copied) toast.success("Link copied successfully");
+		await handleShare(event, link, title);
 	};
 
 	return (
