@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import usePerfectImage from "@/lib/usePerfectImage";
+import { getSplashImageUrl } from "@/lib/usePerfectImage";
 import {
 	fadeInWrapperParent,
 	fadeInWrapperStat,
@@ -15,6 +15,7 @@ import Link from "next/link";
 export default function PersonalizedCard({ data }: { data: DataListType }) {
 	const name = data?.name || data?.title;
 	const link = generateLink(data.media_type, name as string, data.id);
+	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
 	return (
 		<motion.div
 			variants={fadeInWrapperParent}
@@ -24,7 +25,7 @@ export default function PersonalizedCard({ data }: { data: DataListType }) {
 		>
 			<motion.div variants={fadeInWrapperStat}>
 				<Image
-					src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
+					src={imageUrl}
 					alt={`Poster of ${name}`}
 					fill
 					loading="lazy"

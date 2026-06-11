@@ -43,6 +43,13 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" className={cn("font-sans", inter.variable)}>
+			<head>
+				<link
+					rel="preconnect"
+					href="https://image.tmdb.org"
+					crossOrigin="anonymous"
+				/>
+			</head>
 			<body>
 				<Toaster />
 				<AuthContextProvider>

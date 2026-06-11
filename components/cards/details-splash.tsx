@@ -1,7 +1,7 @@
 "use client";
 
 import handleShare from "@/lib/handleShare";
-import usePerfectImage from "@/lib/usePerfectImage";
+import { getSplashImageUrl } from "@/lib/usePerfectImage";
 import {
 	fadeInWrapperParent,
 	fadeInWrapperStat,
@@ -39,6 +39,7 @@ export default function DetailsSplash({
 
 	const name = (data.title || data.name) as string;
 	const link = generateLink(type, name, data.id);
+	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
 
 	useEffect(() => {
 		if (user) {
@@ -94,7 +95,7 @@ export default function DetailsSplash({
 		>
 			<motion.div variants={fadeInWrapperStat}>
 				<Image
-					src={usePerfectImage(data?.poster_path, data?.backdrop_path)}
+					src={imageUrl}
 					alt={`Poster of ${data?.title}`}
 					fill
 					priority
