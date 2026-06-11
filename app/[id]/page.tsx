@@ -10,19 +10,17 @@ type Params = {
 };
 
 export async function generateMetadata(props: Params): Promise<Metadata> {
-    const params = await props.params;
+	const params = await props.params;
 
-    const {
-        id
-    } = params;
+	const { id } = params;
 
-    const parts = id.split("-");
+	const parts = id.split("-");
 
-    const type: string = parts[0];
-    const name: string = parts[1];
-    const itemId: string = parts[2];
+	const type: string = parts[0];
+	const name: string = parts[1];
+	const itemId: string = parts[2];
 
-    try {
+	try {
 		const res: DataListType = await fetchTMDBData(`${type}/${itemId}`);
 		const { name, tagline, backdrop_path, poster_path } = res;
 		const image = `https://image.tmdb.org/t/p/w300${
@@ -51,17 +49,15 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 }
 
 export default async function MovieDetails(props: Params) {
-    const params = await props.params;
+	const params = await props.params;
 
-    const {
-        id
-    } = params;
+	const { id } = params;
 
-    const parts = id.split("-");
+	const parts = id.split("-");
 
-    const type: string = parts[0];
-    const itemId: string = parts[2];
+	const type: string = parts[0];
+	const itemId: string = parts[2];
 
-    const details: DataDetailsType = await fetchTMDBData(`${type}/${itemId}`);
-    return <DetailsCard details={details} type={type as ItemType} />;
+	const details: DataDetailsType = await fetchTMDBData(`${type}/${itemId}`);
+	return <DetailsCard details={details} type={type as ItemType} />;
 }

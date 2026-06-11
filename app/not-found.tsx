@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { IoChevronBack } from "react-icons/io5";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -14,7 +14,7 @@ export default function NotFound() {
 						href="/"
 						className="flex items-center justify-center text-accent"
 					>
-						<ChevronLeft className="inline-block" />
+						<IoChevronBack className="inline-block" />
 						<span>Go back home</span>
 					</Link>
 				</div>

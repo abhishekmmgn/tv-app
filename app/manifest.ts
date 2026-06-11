@@ -1,0 +1,25 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+	return {
+		theme_color: "#202020",
+		background_color: "#0a0a0a",
+		name: "TV App",
+		short_name: "TV",
+		description: "Get recommendations for your next TV show.",
+		display: "standalone",
+		start_url: "/",
+		icons: [
+			{
+				src: "/icon-192x192.png",
+				sizes: "192x192",
+				type: "image/png",
+			},
+			{
+				src: "/icon-512x512.png",
+				sizes: "512x512",
+				type: "image/png",
+			},
+		],
+	};
+}

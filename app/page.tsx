@@ -3,7 +3,7 @@ import HomeItems from "@/components/home-items";
 import { fetchTMDBData, requests } from "@/lib/requests";
 import type { DataListType } from "@/types";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export default async function Home() {
 	const popularRes = await fetchTMDBData(requests.fetchTrendingToday);
