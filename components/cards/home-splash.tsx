@@ -12,7 +12,7 @@ export default function HomeSplash({ data }: { data: DataListType }) {
 	const link = generateLink(data.media_type, name as string, data.id);
 	const imageUrl = getSplashImageUrl(data?.backdrop_path, data?.poster_path);
 	return (
-		<div className="relative w-full inset-x-0 aspect-[9/16] max-h-[90vh] sm:aspect-video sm:max-h-[110vh] bg-secondary animate-fade-in-stagger">
+		<div className="relative w-full inset-x-0 aspect-9/16 max-h-[90vh] sm:aspect-video sm:max-h-[110vh] bg-secondary animate-fade-in-stagger">
 			<div className="animate-fade-in">
 				<Image
 					src={imageUrl}
@@ -24,7 +24,7 @@ export default function HomeSplash({ data }: { data: DataListType }) {
 					className="object-cover"
 				/>
 			</div>
-			<div className="z-10 absolute bottom-0 inset-x-0 h-[50%] bg-gradient-to-b from-transparent to-black flex flex-col justify-end items-center sm:items-start horizontal-padding pb-6 sm:pb-10">
+			<div className="z-10 absolute bottom-0 inset-x-0 h-[50%] bg-linear-to-b from-transparent to-black flex flex-col justify-end items-center sm:items-start horizontal-padding pb-6 sm:pb-10">
 				<h1 className="font-bold text-2xl md:text-3xl w-[90%] lg:w-3/4 text-center sm:text-left line-clamp-1">
 					{name}
 				</h1>
@@ -33,7 +33,7 @@ export default function HomeSplash({ data }: { data: DataListType }) {
 				</p>
 				<Link href={link}>
 					<Button size="lg" className="w-48">
-						Watch
+						Details
 					</Button>
 				</Link>
 			</div>
