@@ -1,6 +1,6 @@
 "use client";
 
-import { IoSearch } from "react-icons/io5";
+import { IoClose, IoSearch } from "react-icons/io5";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -11,6 +11,7 @@ export default function SearchBar() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [searchQuery, setSearchQuery] = useState("");
+	const [localQuery, setLocalQuery] = useState("");
 	const [focused, setFocused] = useState<boolean | null>(null);
 	const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -20,6 +21,7 @@ export default function SearchBar() {
 		const query = searchParams.get("query") ?? "";
 		if (inputRef.current) inputRef.current.value = query;
 		setSearchQuery(query);
+		setLocalQuery(query);
 	}, [searchParams]);
 
 	const handleBlur = () => {
@@ -46,24 +48,48 @@ export default function SearchBar() {
 		setSearchQuery(term);
 	}, 300);
 
+	const handleClear = () => {
+		if (inputRef.current) {
+			inputRef.current.value = "";
+		}
+		setLocalQuery("");
+		setSearchQuery("");
+		if (searchParams.get("query")) {
+			router.replace("/search");
+		}
+		inputRef.current?.focus();
+	};
+
 	return (
-		<div className="relative w-full text-muted-foreground">
+		<div className="relative w-full text-muted-foreground flex items-center">
 			<IoSearch className="absolute top-2.5 left-2 w-5 h-5 md:w-4 md:h-4" />
 			<Input
 				ref={inputRef}
 				placeholder="Game of Thrones"
 				type="search"
 				onChange={(e) => {
-					handleSearch(e.target.value);
-					if (e.target.value) setFocused(true);
+					const val = e.target.value;
+					setLocalQuery(val);
+					handleSearch(val);
+					if (val) setFocused(true);
 				}}
 				onKeyDown={handleKeyDown}
 				onBlur={handleBlur}
 				onFocus={handleFocus}
-				className="h-10 w-full pl-8 pr-2 rounded-lg sm:w-80 md:h-9 bg-secondary"
+				className="h-10 w-full pl-8 pr-10 rounded-lg sm:w-80 md:h-9 bg-secondary"
 			/>
+			{localQuery && (
+				<button
+					type="button"
+					onClick={handleClear}
+					className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-neutral-800/50 transition-colors focus:outline-none flex items-center justify-center cursor-pointer"
+					aria-label="Clear search"
+				>
+					<IoClose className="w-5 h-5" />
+				</button>
+			)}
 			{focused && searchQuery && (
-				<div className="w-full absolute z-40 mt-1 inset-x-0 min-h-screen bg-background/95 sm:mt-2 sm:rounded-sm sm:min-h-0 sm:max-h-64 flex flex-col overflow-y-clip">
+				<div className="w-full absolute z-40 top-full mt-1 inset-x-0 min-h-screen bg-background/95 sm:mt-2 sm:rounded-sm sm:min-h-0 sm:max-h-64 flex flex-col overflow-y-clip">
 					<SearchSuggestions searchQuery={searchQuery} />
 				</div>
 			)}

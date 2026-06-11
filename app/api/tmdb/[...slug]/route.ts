@@ -5,6 +5,11 @@ export async function GET(
 	const { slug } = await params;
 	const endpoint = slug.join("/");
 
+	// Forward query string parameters from the incoming request
+	const { searchParams } = new URL(request.url);
+	const queryString = searchParams.toString();
+	const fullEndpoint = queryString ? `${endpoint}?${queryString}` : endpoint;
+
 	try {
 		const token =
 			process.env.TMDB_AUTH_TOKEN || process.env.NEXT_PUBLIC_TMDB_AUTH_TOKEN;
@@ -17,7 +22,7 @@ export async function GET(
 		}
 
 		const response = await fetch(
-			`https://api.themoviedb.org/3/${endpoint}`,
+			`https://api.themoviedb.org/3/${fullEndpoint}`,
 			{
 				headers: {
 					accept: "application/json",
