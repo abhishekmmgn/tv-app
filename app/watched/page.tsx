@@ -25,11 +25,12 @@ function WatchedContent() {
 	const searchParams = useSearchParams();
 	const page = Number(searchParams.get("page")) || 1;
 
-	const [watchlist, setWatchlist] = useState<{ id: number; type: ItemType }[]>(
-		[],
+	const [watchlist, setWatchlist] = useState<{ id: number; type: ItemType }[] | null>(
+		null,
 	);
 	const [items, setItems] = useState<any[]>([]);
 	const [dataLoading, setDataLoading] = useState(true);
+	const [prevPage, setPrevPage] = useState(page);
 
 	// Auth guard — wait until Firebase resolves before redirecting
 	useEffect(() => {
@@ -38,19 +39,27 @@ function WatchedContent() {
 		}
 	}, [authLoading, user, router]);
 
-	// Fetch watchlist from Firestore once user is known
 	useEffect(() => {
 		if (!user) return;
 		getUserWatchlist(user.uid).then((list) => {
 			setWatchlist(list);
-			if (list.length === 0) setDataLoading(false);
 		});
 	}, [user]);
 
 	// Fetch TMDB data for the current page slice
 	useEffect(() => {
-		if (!user || watchlist.length === 0) return;
-		setDataLoading(true);
+		if (!user || watchlist === null) return;
+		if (watchlist.length === 0) {
+			setItems([]);
+			setDataLoading(false);
+			return;
+		}
+
+		if (page !== prevPage) {
+			setDataLoading(true);
+			setPrevPage(page);
+		}
+
 		const pageSlice = watchlist.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 		Promise.all(
 			pageSlice.map((item) =>
@@ -62,9 +71,9 @@ function WatchedContent() {
 			setItems(results.filter(Boolean));
 			setDataLoading(false);
 		});
-	}, [user, watchlist, page]);
+	}, [user, watchlist, page, prevPage]);
 
-	const totalPages = Math.ceil(watchlist.length / PAGE_SIZE);
+	const totalPages = watchlist ? Math.ceil(watchlist.length / PAGE_SIZE) : 0;
 
 	if (authLoading || dataLoading) {
 		return (
@@ -88,7 +97,7 @@ function WatchedContent() {
 					Watched
 				</h1>
 				<span className="text-muted-foreground text-sm">
-					{watchlist.length} {watchlist.length === 1 ? "item" : "items"}
+					{watchlist?.length || 0} {(watchlist?.length || 0) === 1 ? "item" : "items"}
 				</span>
 			</div>
 
@@ -107,6 +116,12 @@ function WatchedContent() {
 								title={item.title || item.name}
 								type={item.media_type}
 								image={buildPosterImage(item.poster_path, item.backdrop_path)}
+								onToggle={(id, watched) => {
+									if (!watched) {
+										setWatchlist((prev) => prev ? prev.filter((w) => w.id !== id) : null);
+										setItems((prev) => prev.filter((i) => i.id !== id));
+									}
+								}}
 							/>
 						))}
 					</div>

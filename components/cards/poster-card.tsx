@@ -1,11 +1,5 @@
 "use client";
 
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import handleShare from "@/lib/handleShare";
 import { generateLink } from "@/lib/utils";
 import {
@@ -15,12 +9,7 @@ import {
 } from "@/lib/watchlist";
 import { UserAuth } from "@/providers/auth-provider";
 import type { BasicDataType } from "@/types";
-import {
-	IoCheckmark,
-	IoChevronForward,
-	IoEllipsisHorizontal,
-	IoShareOutline,
-} from "react-icons/io5";
+import { IoCheckmark, IoClose, IoShareOutline } from "react-icons/io5";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useOptimistic, useTransition } from "react";
@@ -32,7 +21,11 @@ export default function PosterCard({
 	title,
 	type,
 	className,
-}: BasicDataType & { className?: string }) {
+	onToggle,
+}: BasicDataType & {
+	className?: string;
+	onToggle?: (id: number, watched: boolean) => void;
+}) {
 	const { user } = UserAuth();
 	const [watched, setWatched] = useState(false);
 	const [optimisticWatched, setOptimisticWatched] = useOptimistic(
@@ -73,6 +66,7 @@ export default function PosterCard({
 					toast.success(`Removed from your watchlist.`);
 				}
 				setWatched(nextWatched);
+				if (onToggle) onToggle(id, nextWatched);
 			} catch (error) {
 				toast.error("Failed to update watchlist.");
 			}
@@ -83,9 +77,7 @@ export default function PosterCard({
 		event.stopPropagation();
 		event.preventDefault();
 		const { copied } = await handleShare(event, link, title);
-		if (copied) {
-			toast.success("Link copied successfully");
-		}
+		if (copied) toast.success("Link copied successfully");
 	};
 
 	return (
@@ -100,51 +92,36 @@ export default function PosterCard({
 						alt={title}
 						className="hover:brightness-90"
 					/>
-					<DropdownMenu>
-						<DropdownMenuTrigger
-							render={
-								<button
-									type="button"
-									onClick={(e) => {
-										e.stopPropagation();
-										e.preventDefault();
-									}}
-									className="z-10 absolute right-3 bottom-3 w-7 h-7 bg-white opacity-80 backdrop-blur-sm shadow-sm rounded-full flex items-center justify-center cursor-pointer outline-none"
-								>
-									<IoEllipsisHorizontal
-										className="text-blue-500 w-6 h-6"
-										aria-label="Options"
-									/>
-								</button>
-							}
-						/>
-						<DropdownMenuContent
-							align="end"
-							className="w-56 bg-background backdrop-blur-sm"
+					<div className="z-10 absolute right-3 bottom-3 flex gap-2">
+						<button
+							type="button"
+							disabled={isPending}
+							onClick={handleToggleWatchlist}
+							className="w-7 h-7 bg-white opacity-80 hover:opacity-100 backdrop-blur-sm shadow-sm rounded-full flex items-center justify-center cursor-pointer outline-none transition-all duration-200 active:scale-95 disabled:opacity-50"
 						>
-							<DropdownMenuItem
-								className="space-x-4 flex justify-between"
-								onClick={handleToggleWatchlist}
-								disabled={isPending}
-							>
-								<div>
-									{optimisticWatched ? "Mark as Unwatched" : "Mark as Watched"}
-								</div>
-								{optimisticWatched ? (
-									<IoCheckmark className="w-4 h-4 text-emerald-500" />
-								) : (
-									<IoCheckmark className="w-4 h-4" />
-								)}
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								className="space-x-4 flex justify-between"
-								onClick={handleClick}
-							>
-								<p>Share</p>
-								<IoShareOutline className="w-4 h-4" />
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+							{optimisticWatched ? (
+								<IoClose
+									className="text-rose-500 w-4 h-4"
+									aria-label="Mark as Unwatched"
+								/>
+							) : (
+								<IoCheckmark
+									className="text-emerald-500 w-4 h-4"
+									aria-label="Mark as Watched"
+								/>
+							)}
+						</button>
+						<button
+							type="button"
+							onClick={handleClick}
+							className="w-7 h-7 bg-white opacity-80 hover:opacity-100 backdrop-blur-sm shadow-sm rounded-full flex items-center justify-center cursor-pointer outline-none transition-all duration-200 active:scale-95"
+						>
+							<IoShareOutline
+								className="text-blue-500 w-4 h-4"
+								aria-label="Share"
+							/>
+						</button>
+					</div>
 				</div>
 			</Link>
 

@@ -47,14 +47,19 @@ export default function SettingsModal() {
 			<DropdownMenu>
 				<DropdownMenuTrigger
 					render={
-						<button type="button" className="rounded-full outline-none focus:outline-none">
+						<button
+							type="button"
+							className="rounded-full outline-none focus:outline-none"
+						>
 							<Avatar className="cursor-pointer w-9 h-9">
 								<AvatarImage
 									src={user?.photoURL || undefined}
 									alt="Profile Photo"
 								/>
 								<AvatarFallback>
-									{user?.displayName?.charAt(0) || user?.email?.charAt(0) || "U"}
+									{user?.displayName?.charAt(0) ||
+										user?.email?.charAt(0) ||
+										"U"}
 								</AvatarFallback>
 							</Avatar>
 						</button>
@@ -75,6 +80,11 @@ export default function SettingsModal() {
 					<Link href="/watched">
 						<DropdownMenuItem className="cursor-pointer">
 							Watched items
+						</DropdownMenuItem>
+					</Link>
+					<Link href="/suggestions">
+						<DropdownMenuItem className="cursor-pointer">
+							Suggestions
 						</DropdownMenuItem>
 					</Link>
 					<DropdownMenuSeparator />
