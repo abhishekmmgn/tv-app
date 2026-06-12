@@ -40,9 +40,25 @@ const fetchTMDBData = async (
 	endpoint: string,
 	options?: { revalidate?: number | false },
 ) => {
+	let cleanEndpoint = endpoint;
+	if (endpoint.includes("search/") || endpoint.includes("discover/")) {
+		const queryStartIndex = endpoint.indexOf("?");
+		if (queryStartIndex !== -1) {
+			const path = endpoint.substring(0, queryStartIndex);
+			const search = endpoint.substring(queryStartIndex + 1);
+			const params = new URLSearchParams(search);
+			if (!params.has("include_adult")) {
+				params.set("include_adult", "false");
+				cleanEndpoint = `${path}?${params.toString()}`;
+			}
+		} else {
+			cleanEndpoint = `${endpoint}?include_adult=false`;
+		}
+	}
+
 	try {
 		const response = await fetch(
-			`https://api.themoviedb.org/3/${endpoint}`,
+			`https://api.themoviedb.org/3/${cleanEndpoint}`,
 			{
 				headers: {
 					accept: "application/json",

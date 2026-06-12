@@ -40,6 +40,7 @@ export async function getSuggestions(
 		const results: any[] = res?.results ?? [];
 		for (const item of results) {
 			if (!item?.id || watchedIds.has(item.id)) continue;
+			if (item.adult) continue;
 			if (!item.poster_path && !item.backdrop_path) continue;
 
 			const existing = scored.get(item.id);

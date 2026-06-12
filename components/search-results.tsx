@@ -35,7 +35,7 @@ export default async function SearchResults(props: propsType) {
 		const results = [
 			...(data1?.results ?? []),
 			...(data2?.results ?? []),
-		];
+		].filter((item: any) => !item.adult);
 		const totalPages = Math.ceil((data1?.total_pages ?? 1) / 2);
 		const totalResults: number = data1?.total_results ?? 0;
 
@@ -87,7 +87,7 @@ export default async function SearchResults(props: propsType) {
 		fetchTMDBData(`search/tv?query=${q}&page=${props.page}`),
 	]);
 
-	const movies: any[] = movieData?.results ?? [];
+	const movies: any[] = (movieData?.results ?? []).filter((item: any) => !item.adult);
 	const shows: any[] = tvData?.results ?? [];
 	const interleaved: any[] = [];
 	const maxLen = Math.max(movies.length, shows.length);

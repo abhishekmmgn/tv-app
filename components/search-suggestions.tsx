@@ -20,8 +20,8 @@ export default function SearchSuggestions(props: { searchQuery: string }) {
 			];
 			const [movieData, tvData] = await Promise.all(promises);
 			const interleavedData = interleaveResults(
-				movieData?.results,
-				tvData?.results,
+				(movieData?.results ?? []).filter((item: any) => !item.adult),
+				(tvData?.results ?? []).filter((item: any) => !item.adult),
 			);
 			setData(interleavedData);
 			setIsLoading(false);

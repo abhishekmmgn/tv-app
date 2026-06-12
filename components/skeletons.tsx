@@ -101,15 +101,35 @@ export function CardGallerySkeleton({
 				<div className="flex gap-5 overflow-x-auto whitespace-nowrap no-scrollbar">
 					{loadingArray.map((item) => {
 						if (type === "video") {
-							return <VideoCardSkeleton key={item} />;
+							return (
+								<div key={item}>
+									<VideoCardSkeleton />
+								</div>
+							);
 						} else if (type === "category") {
-							return <PosterCardSkeleton key={item} />;
+							return (
+								<div key={item}>
+									<PosterCardSkeleton />
+								</div>
+							);
 						} else if (type === "credits") {
-							return <CreditsCardSkeleton key={item} />;
+							return (
+								<div key={item}>
+									<CreditsCardSkeleton />
+								</div>
+							);
 						} else if (type === "poster") {
-							return <PosterCardSkeleton key={item} />;
+							return (
+								<div key={item}>
+									<PosterCardSkeleton />
+								</div>
+							);
 						} else if (type === "season") {
-							return <SeasonCardSkeleton key={item} />;
+							return (
+								<div key={item}>
+									<SeasonCardSkeleton />
+								</div>
+							);
 						}
 					})}
 				</div>
