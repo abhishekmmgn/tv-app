@@ -1,3 +1,14 @@
+function secondsUntilEndOfDay(): number {
+  const now = new Date();
+  const midnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0, 0, 0, 0,
+  );
+  return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string[] }> },
@@ -26,6 +37,8 @@ export async function GET(
       );
     }
 
+    const ttl = secondsUntilEndOfDay();
+
     const response = await fetch(
       `https://api.themoviedb.org/3/${fullEndpoint}`,
       {
@@ -33,7 +46,7 @@ export async function GET(
           accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
-        next: { revalidate: 3600 },
+        next: { revalidate: ttl },
       },
     );
 
@@ -47,7 +60,7 @@ export async function GET(
     const data = await response.json();
     return Response.json(data, {
       headers: {
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        "Cache-Control": `public, s-maxage=${ttl}, stale-while-revalidate=86400`,
       },
     });
   } catch (error) {

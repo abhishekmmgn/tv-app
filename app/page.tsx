@@ -4,7 +4,7 @@ import SuggestedForYou from "@/components/suggested-for-you";
 import { fetchTMDBData, requests } from "@/lib/requests";
 import type { DataListType } from "@/types";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function Home() {
 	const popularRes = await fetchTMDBData(requests.fetchTrendingToday);
