@@ -7,6 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint .",
+		"test": "vitest run",
 		"format": "@biomejs/biome format --write"
 	},
 	"dependencies": {
@@ -16,6 +17,7 @@
 		"@vercel/speed-insights": "^2.0.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"effect": "^4.0.1",
 		"firebase": "^10.5.0",
 		"next": "^16.2.9",
 		"next-themes": "^0.4.6",
@@ -32,7 +34,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"@types/node": "^20",
+		"@effect/language-service": "^0.87.4",
+		"@effect/vitest": "^4.0.1",
+		"@types/node": "^24.19.1",
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
 		"autoprefixer": "^10",
@@ -42,6 +46,7 @@
 		"prettier": "^3.0.3",
 		"prettier-plugin-tailwindcss": "^0.5.6",
 		"tailwindcss": "^4.3.0",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^5.0.3"
 	}
 }

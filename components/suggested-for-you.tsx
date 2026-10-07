@@ -3,15 +3,15 @@
 import PosterCard from "@/components/cards/poster-card";
 import { CardGallerySkeleton } from "@/components/skeletons";
 import { Separator } from "@/components/ui/separator";
-import { getSuggestions } from "@/lib/suggestions";
-import { getUserWatchlist } from "@/lib/watchlist";
+import { useBrowserEffect } from "@/hooks/use-effect";
+import { suggestionsFor } from "@/lib/suggestions";
 import { UserAuth } from "@/providers/auth-provider";
 import noItem from "@/public/no-item.png";
 import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
-function posterImage(posterPath?: string, backdropPath?: string) {
+function posterImage(posterPath?: string | null, backdropPath?: string | null) {
 	if (posterPath) return `https://image.tmdb.org/t/p/w342${posterPath}`;
 	if (backdropPath) return `https://image.tmdb.org/t/p/w300${backdropPath}`;
 	return noItem;
@@ -19,28 +19,17 @@ function posterImage(posterPath?: string, backdropPath?: string) {
 
 export default function SuggestedForYou() {
 	const { user } = UserAuth();
-	const [items, setItems] = useState<any[] | null>(null);
-
-	useEffect(() => {
-		if (!user) {
-			setItems([]);
-			return;
-		}
-		let active = true;
-		(async () => {
-			const watchlist = await getUserWatchlist(user.uid);
-			const suggestions = await getSuggestions(watchlist, { limit: 20 });
-			if (active) setItems(suggestions);
-		})();
-		return () => {
-			active = false;
-		};
-	}, [user]);
+	const effect = useMemo(
+		() => (user ? suggestionsFor(user.uid, { limit: 20 }) : null),
+		[user],
+	);
+	const { data, loading, error } = useBrowserEffect(effect);
+	const items = error ? [] : data;
 
 	// Hide entirely for logged-out users or when there's nothing to suggest.
 	if (!user) return null;
 	if (items !== null && items.length === 0) return null;
-	if (items === null) {
+	if (loading || items === null) {
 		return <CardGallerySkeleton title="Suggested for you" type="poster" />;
 	}
 
@@ -60,7 +49,7 @@ export default function SuggestedForYou() {
 							<PosterCard
 								image={posterImage(item.poster_path, item.backdrop_path)}
 								id={item.id}
-								title={item.title || item.name}
+								title={item.title || item.name || ""}
 								type={item.first_air_date || item.name ? "tv" : "movie"}
 							/>
 						</div>

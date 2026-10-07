@@ -1,5 +1,7 @@
 import { Separator } from "@/components/ui/separator";
-import { fetchTMDBData } from "@/lib/requests";
+import { runServerOrNull } from "@/lib/effect/runtime";
+import { TmdbList } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
 import type { CardType, DataListType, GalleryType } from "@/types";
 import { IoChevronForward } from "react-icons/io5";
 import CategoriesGallery from "./categories-gallery";
@@ -70,6 +72,6 @@ export async function CardGalleryWrapper({
 	if (type === "category") {
 		return <CardGallery data={[]} title={title} type={type} />;
 	}
-	const data = await fetchTMDBData(url);
+	const data = await runServerOrNull(tmdbGet(url, TmdbList));
 	return <CardGallery data={data} title={title} type={type} />;
 }

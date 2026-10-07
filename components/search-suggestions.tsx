@@ -1,34 +1,34 @@
 "use client";
 
 import interleaveResults from "@/lib/interleaveResults";
-import { fetchTMDBDataClient } from "@/lib/requests";
+import { useBrowserEffect } from "@/hooks/use-effect";
+import { TmdbList } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
+import { Effect } from "effect";
 import { BasicDataType } from "@/types";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import SearchSuggestionsCard from "./cards/search-suggestions-card";
 import { SearchSuggestionsCardSkeleton } from "./skeletons";
 
 export default function SearchSuggestions(props: { searchQuery: string }) {
-	const [data, setData] = useState<any[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchSearchResults() {
-			const q = encodeURIComponent(props.searchQuery);
-			const promises = [
-				fetchTMDBDataClient(`search/movie?query=${q}`),
-				fetchTMDBDataClient(`search/tv?query=${q}`),
-			];
-			const [movieData, tvData] = await Promise.all(promises);
-			const interleavedData = interleaveResults(
-				(movieData?.results ?? []).filter((item: any) => !item.adult),
-				(tvData?.results ?? []).filter((item: any) => !item.adult),
+	const effect = useMemo(() => {
+		const q = encodeURIComponent(props.searchQuery);
+		// One failed search just contributes no results.
+		const search = (kind: "movie" | "tv") =>
+			tmdbGet(`search/${kind}?query=${q}`, TmdbList).pipe(
+				Effect.catch(() => Effect.succeed(null)),
 			);
-			setData(interleavedData);
-			setIsLoading(false);
-		}
-
-		fetchSearchResults();
+		return Effect.all([search("movie"), search("tv")], { concurrency: 2 });
 	}, [props.searchQuery]);
+	const { data: responses, loading: isLoading } = useBrowserEffect(effect);
+
+	const data = useMemo(() => {
+		const [movieData, tvData] = responses ?? [null, null];
+		return interleaveResults(
+			(movieData?.results ?? []).filter((item) => !item.adult),
+			(tvData?.results ?? []).filter((item) => !item.adult),
+		);
+	}, [responses]);
 	return (
 		<>
 			{isLoading &&

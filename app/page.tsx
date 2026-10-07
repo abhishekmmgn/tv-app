@@ -1,14 +1,21 @@
 import HomeSplash from "@/components/cards/home-splash";
 import HomeItems from "@/components/home-items";
 import SuggestedForYou from "@/components/suggested-for-you";
-import { fetchTMDBData, requests } from "@/lib/requests";
-import type { DataListType } from "@/types";
+import { TmdbList } from "@/lib/effect/schemas";
+import { runServer } from "@/lib/effect/runtime";
+import { TmdbClient } from "@/lib/effect/tmdb";
+import { requests } from "@/lib/requests";
+import { Effect } from "effect";
 
 export const revalidate = 86400;
 
 export default async function Home() {
-	const popularRes = await fetchTMDBData(requests.fetchTrendingToday);
-	const popular: DataListType[] = popularRes.results;
+	const { results: popular } = await runServer(
+		Effect.gen(function* () {
+			const tmdb = yield* TmdbClient;
+			return yield* tmdb.get(requests.fetchTrendingToday, TmdbList);
+		}),
+	);
 	return (
 		<>
 			<HomeSplash data={popular[0]} />

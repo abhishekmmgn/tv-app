@@ -10,19 +10,24 @@ import { Input } from "./ui/input";
 export default function SearchBar() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [searchQuery, setSearchQuery] = useState("");
-	const [localQuery, setLocalQuery] = useState("");
+	const urlQuery = searchParams.get("query") ?? "";
+	const [searchQuery, setSearchQuery] = useState(urlQuery);
+	const [localQuery, setLocalQuery] = useState(urlQuery);
+	const [syncedQuery, setSyncedQuery] = useState(urlQuery);
 	const [focused, setFocused] = useState<boolean | null>(null);
 	const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	// Sync input with URL query param on navigation
+	// Sync input state with the URL query param on navigation. State is adjusted
+	// during render; only the uncontrolled DOM input needs an effect.
+	if (syncedQuery !== urlQuery) {
+		setSyncedQuery(urlQuery);
+		setSearchQuery(urlQuery);
+		setLocalQuery(urlQuery);
+	}
 	useEffect(() => {
-		const query = searchParams.get("query") ?? "";
-		if (inputRef.current) inputRef.current.value = query;
-		setSearchQuery(query);
-		setLocalQuery(query);
-	}, [searchParams]);
+		if (inputRef.current) inputRef.current.value = urlQuery;
+	}, [urlQuery]);
 
 	const handleBlur = () => {
 		blurTimeoutRef.current = setTimeout(() => {

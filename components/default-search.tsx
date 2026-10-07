@@ -3,11 +3,16 @@ import {
 	SuggestionCard,
 } from "@/components/cards/suggestion-cards";
 import { categories } from "@/lib/data";
-import { fetchTMDBData, requests } from "@/lib/requests";
+import { runServerOrNull } from "@/lib/effect/runtime";
+import { TmdbList } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
+import { requests } from "@/lib/requests";
 import { CategoryCardType } from "@/types";
 
 export default async function DefaultSearch() {
-	const data = await fetchTMDBData(requests.fetchTrendingToday);
+	const data = await runServerOrNull(
+		tmdbGet(requests.fetchTrendingToday, TmdbList),
+	);
 	return (
 		<div className="horizontal-padding py-5">
 			<h1 className="font-semibold text-lg mb-4 text-neutral-200">
@@ -23,13 +28,13 @@ export default async function DefaultSearch() {
 						key={`${category.title}-${category.from}-${category.to}`}
 					/>
 				))}
-				{data?.results.map((item: any, index: number) => (
+				{data?.results.map((item, index) => (
 					<SuggestionCard
 						id={item.id}
-						title={item.title || item.name}
+						title={item.title || item.name || ""}
 						type={item.first_air_date || item.name ? "tv" : "movie"}
 						key={index}
-						image={item.backdrop_path || item.poster_path}
+						image={item.backdrop_path || item.poster_path || ""}
 					/>
 				))}
 			</div>

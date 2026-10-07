@@ -17,8 +17,8 @@ export function SplashImage({
 	className,
 	fetchPriority = "auto",
 }: {
-	backdrop_path?: string;
-	poster_path?: string;
+	backdrop_path?: string | null;
+	poster_path?: string | null;
 	alt: string;
 	className?: string;
 	fetchPriority?: "high" | "low" | "auto";

@@ -8,26 +8,23 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { fetchTMDBDataClient } from "@/lib/requests";
-import { useEffect, useState } from "react";
+import { useBrowserEffect } from "@/hooks/use-effect";
+import { TmdbSeason } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
+import { useMemo, useState } from "react";
 import CardGallery from "./gallery/card-gallery";
-import { GalleryType } from "@/types";
 
 export default function Seasons({
 	id,
 	seasons,
 }: { id: number; seasons: number }) {
 	const [currentSeason, setCurrentSeason] = useState(1);
-	const [data, setData] = useState<GalleryType[]>([]);
-
-	useEffect(() => {
-		const fetchData = async () => {
-			const res = await fetchTMDBDataClient(`tv/${id}/season/${currentSeason}`);
-			setData(res?.episodes ?? []);
-		};
-
-		fetchData();
-	}, [id, currentSeason]);
+	const effect = useMemo(
+		() => tmdbGet(`tv/${id}/season/${currentSeason}`, TmdbSeason),
+		[id, currentSeason],
+	);
+	const { data: season } = useBrowserEffect(effect);
+	const data = season?.episodes ?? [];
 
 	return (
 		<div className="space-y-2.5">

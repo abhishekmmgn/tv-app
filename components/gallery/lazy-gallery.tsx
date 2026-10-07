@@ -1,9 +1,11 @@
 "use client";
 import { useInView } from "@/lib/useInView";
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import CardGallery from "./card-gallery";
 import { CardGallerySkeleton } from "../skeletons";
-import { fetchTMDBDataClient } from "@/lib/requests";
+import { useBrowserEffect } from "@/hooks/use-effect";
+import { TmdbList } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
 import { CardType } from "@/types";
 
 export default function LazyGallery({
@@ -17,21 +19,15 @@ export default function LazyGallery({
 }) {
 	const [ref, inView] = useInView({ threshold: 0.2 });
 	const [show, setShow] = useState(false);
-	const [data, setData] = useState(null);
-	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (inView && !show) setShow(true);
-	}, [inView, show]);
+	// Latch: once seen, keep showing (adjusting state during render, not in an effect).
+	if (inView && !show) setShow(true);
 
-	useEffect(() => {
-		if (show && !data && type !== "category") {
-			setLoading(true);
-			fetchTMDBDataClient(url)
-				.then((res) => setData(res))
-				.finally(() => setLoading(false));
-		}
-	}, [show, url, data, type]);
+	const effect = useMemo(
+		() => (show && type !== "category" ? tmdbGet(url, TmdbList) : null),
+		[show, url, type],
+	);
+	const { data, error } = useBrowserEffect(effect);
 
 	if (type === "category") {
 		return (
@@ -43,7 +39,7 @@ export default function LazyGallery({
 
 	return (
 		<div ref={ref}>
-			{show && !loading && data ? (
+			{error ? null : show && data ? (
 				<CardGallery data={data} title={title} type={type} />
 			) : (
 				<CardGallerySkeleton title={title} type={type} />

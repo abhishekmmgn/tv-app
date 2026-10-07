@@ -3,17 +3,16 @@
 import Pagination from "@/components/pagination";
 import PosterCard from "@/components/cards/poster-card";
 import { PosterCardSkeleton } from "@/components/skeletons";
-import { fetchTMDBData } from "@/lib/requests";
-import { getUserWatchlist } from "@/lib/watchlist";
+import { useBrowserEffect } from "@/hooks/use-effect";
+import { watchedPage } from "@/lib/effect/watchlist-items";
 import { UserAuth } from "@/providers/auth-provider";
 import noItem from "@/public/no-item.png";
-import type { ItemType } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 const PAGE_SIZE = 20;
 
-function buildPosterImage(posterPath?: string, backdropPath?: string) {
+function buildPosterImage(posterPath?: string | null, backdropPath?: string | null) {
 	if (posterPath) return `https://image.tmdb.org/t/p/w342${posterPath}`;
 	if (backdropPath) return `https://image.tmdb.org/t/p/w300${backdropPath}`;
 	return noItem;
@@ -25,12 +24,8 @@ function WatchedContent() {
 	const searchParams = useSearchParams();
 	const page = Number(searchParams.get("page")) || 1;
 
-	const [watchlist, setWatchlist] = useState<{ id: number; type: ItemType }[] | null>(
-		null,
-	);
-	const [items, setItems] = useState<any[]>([]);
-	const [dataLoading, setDataLoading] = useState(true);
-	const [prevPage, setPrevPage] = useState(page);
+	// Items un-watched from this page; hidden locally without a refetch.
+	const [removed, setRemoved] = useState<ReadonlySet<number>>(new Set());
 
 	// Auth guard — wait until Firebase resolves before redirecting
 	useEffect(() => {
@@ -39,41 +34,15 @@ function WatchedContent() {
 		}
 	}, [authLoading, user, router]);
 
-	useEffect(() => {
-		if (!user) return;
-		getUserWatchlist(user.uid).then((list) => {
-			setWatchlist(list);
-		});
-	}, [user]);
+	const effect = useMemo(
+		() => (user ? watchedPage(user.uid, page, PAGE_SIZE) : null),
+		[user, page],
+	);
+	const { data, loading: dataLoading } = useBrowserEffect(effect);
 
-	// Fetch TMDB data for the current page slice
-	useEffect(() => {
-		if (!user || watchlist === null) return;
-		if (watchlist.length === 0) {
-			setItems([]);
-			setDataLoading(false);
-			return;
-		}
-
-		if (page !== prevPage) {
-			setDataLoading(true);
-			setPrevPage(page);
-		}
-
-		const pageSlice = watchlist.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-		Promise.all(
-			pageSlice.map((item) =>
-				fetchTMDBData(`${item.type}/${item.id}`).then((data) =>
-					data ? { ...data, media_type: item.type } : null,
-				),
-			),
-		).then((results) => {
-			setItems(results.filter(Boolean));
-			setDataLoading(false);
-		});
-	}, [user, watchlist, page, prevPage]);
-
-	const totalPages = watchlist ? Math.ceil(watchlist.length / PAGE_SIZE) : 0;
+	const items = (data?.items ?? []).filter((item) => !removed.has(item.id));
+	const total = Math.max(0, (data?.total ?? 0) - removed.size);
+	const totalPages = Math.ceil(total / PAGE_SIZE);
 
 	if (authLoading || dataLoading) {
 		return (
@@ -99,7 +68,7 @@ function WatchedContent() {
 					Watched
 				</h1>
 				<span className="text-muted-foreground text-sm">
-					{watchlist?.length || 0} {(watchlist?.length || 0) === 1 ? "item" : "items"}
+					{total} {total === 1 ? "item" : "items"}
 				</span>
 			</div>
 
@@ -115,14 +84,11 @@ function WatchedContent() {
 								key={`${item.media_type}-${item.id}`}
 								className="w-full"
 								id={item.id}
-								title={item.title || item.name}
+								title={item.title || item.name || ""}
 								type={item.media_type}
 								image={buildPosterImage(item.poster_path, item.backdrop_path)}
 								onToggle={(id, watched) => {
-									if (!watched) {
-										setWatchlist((prev) => prev ? prev.filter((w) => w.id !== id) : null);
-										setItems((prev) => prev.filter((i) => i.id !== id));
-									}
+									if (!watched) setRemoved((prev) => new Set(prev).add(id));
 								}}
 							/>
 						))}

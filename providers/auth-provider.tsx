@@ -1,26 +1,22 @@
 "use client";
 
+import { browserRuntime } from "@/lib/effect/browser";
 import {
-	GoogleAuthProvider,
-	onAuthStateChanged,
-	signInWithPopup,
-	signOut,
-	User,
-	deleteUser,
-} from "firebase/auth";
+	type AuthUser,
+	AuthService,
+	deleteAccount as deleteAccountEffect,
+	UserStore,
+} from "@/lib/effect/firebase";
+import type { WatchItem } from "@/lib/effect/schemas";
+import { Effect, Stream } from "effect";
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth, db } from "../firebase-config";
-
-interface WatchlistItem {
-	id: number;
-	type: "movie" | "tv";
-}
+import toast from "react-hot-toast";
 
 interface AuthContextType {
-	user: any;
+	user: AuthUser | null;
 	isLoading: boolean;
-	watchlist: WatchlistItem[];
-	googleSignIn: () => void;
+	watchlist: WatchItem[];
+	googleSignIn: () => Promise<void>;
 	logOut: () => void;
 	deleteAccount: () => Promise<void>;
 	isInWatchlist: (id: number) => boolean;
@@ -30,104 +26,128 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Closing the popup is the user's choice, not an error worth a toast.
+const SILENT_SIGN_IN_CODES = [
+	"auth/popup-closed-by-user",
+	"auth/cancelled-popup-request",
+];
+
 export const AuthContextProvider = ({
 	children,
 }: {
 	children: React.ReactNode;
 }) => {
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<AuthUser | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
+	const [watchlist, setWatchlist] = useState<WatchItem[]>([]);
 
-	const googleSignIn = async () => {
-		const provider = new GoogleAuthProvider();
-		try {
-			await signInWithPopup(auth, provider);
-		} catch (err) {
-			return err;
-		}
-	};
+	const googleSignIn = () =>
+		browserRuntime.runPromise(
+			Effect.gen(function* () {
+				const auth = yield* AuthService;
+				yield* auth.signInWithGoogle;
+			}).pipe(
+				Effect.catchTag("FirebaseError", (error) =>
+					error.code && SILENT_SIGN_IN_CODES.includes(error.code)
+						? Effect.void
+						: Effect.sync(() => {
+								console.error("Sign in failed:", error);
+								toast.error("Sign in failed. Please try again.");
+							}),
+				),
+			),
+		);
 
 	const logOut = () => {
-		signOut(auth);
 		setWatchlist([]);
+		void browserRuntime.runPromise(
+			Effect.gen(function* () {
+				const auth = yield* AuthService;
+				yield* auth.signOut;
+			}).pipe(
+				Effect.catchTag("FirebaseError", (error) =>
+					Effect.sync(() => {
+						console.error("Sign out failed:", error);
+						toast.error("Something went wrong when logging out.");
+					}),
+				),
+			),
+		);
 	};
 
-	const isInWatchlist = (id: number) => {
-		return watchlist.some((item) => item.id === id);
-	};
+	const isInWatchlist = (id: number) => watchlist.some((item) => item.id === id);
 
+	// Optimistic: update local state first, roll back if Firestore rejects. The
+	// returned promise rejects with the FirebaseError so callers can toast.
 	const addToWatchlist = async (id: number, type: "movie" | "tv") => {
 		if (!user) return;
-		const newItem = { id, type };
-		if (!isInWatchlist(id)) {
-			setWatchlist((prev) => [...prev, newItem]);
+		const item: WatchItem = { id, type };
+		const added = !isInWatchlist(id);
+		if (added) setWatchlist((prev) => [...prev, item]);
+		try {
+			await browserRuntime.runPromise(
+				Effect.gen(function* () {
+					const store = yield* UserStore;
+					yield* store.addItem(user.uid, item);
+				}),
+			);
+		} catch (error) {
+			if (added) setWatchlist((prev) => prev.filter((w) => w.id !== id));
+			throw error;
 		}
-		const { arrayUnion, doc, setDoc } = await import("firebase/firestore");
-		const userDocRef = doc(db, "users", user.uid);
-		await setDoc(userDocRef, { watchlist: arrayUnion(newItem) }, { merge: true });
 	};
 
 	const removeFromWatchlist = async (id: number) => {
 		if (!user) return;
 		const item = watchlist.find((w) => w.id === id);
-		if (item) {
-			setWatchlist((prev) => prev.filter((w) => w.id !== id));
-		}
-		const { arrayRemove, doc, setDoc } = await import("firebase/firestore");
-		const userDocRef = doc(db, "users", user.uid);
-		await setDoc(
-			userDocRef,
-			{ watchlist: arrayRemove(item) },
-			{ merge: true },
-		);
-	};
-
-	const deleteAccount = async () => {
-		const user = auth.currentUser;
-		if (user) {
-			const { deleteDoc, doc, getDoc, setDoc } = await import(
-				"firebase/firestore"
+		if (!item) return;
+		setWatchlist((prev) => prev.filter((w) => w.id !== id));
+		try {
+			await browserRuntime.runPromise(
+				Effect.gen(function* () {
+					const store = yield* UserStore;
+					yield* store.removeItem(user.uid, item);
+				}),
 			);
-			const userDocRef = doc(db, "users", user.uid);
-
-			const userDocSnap = await getDoc(userDocRef);
-			const userData = userDocSnap.data();
-
-			await deleteDoc(userDocRef);
-
-			try {
-				await deleteUser(user);
-			} catch (error) {
-				if (userData) await setDoc(userDocRef, userData);
-				throw error;
-			}
+		} catch (error) {
+			setWatchlist((prev) => (prev.some((w) => w.id === id) ? prev : [...prev, item]));
+			throw error;
 		}
 	};
+
+	// Rejects with the FirebaseError (e.g. code "auth/requires-recent-login").
+	const deleteAccount = () => browserRuntime.runPromise(deleteAccountEffect());
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-			setUser(currentUser);
-			if (currentUser) {
-				const { doc, getDoc } = await import("firebase/firestore");
-				const userDocRef = doc(db, "users", currentUser.uid);
-				const userDocSnap = await getDoc(userDocRef);
-				const userData = userDocSnap.data();
-				if (userData?.watchlist) {
-					setWatchlist(userData.watchlist);
-				} else if (!userDocSnap.exists()) {
-					const { setDoc } = await import("firebase/firestore");
-					await setDoc(userDocRef, {
-						name: currentUser.displayName,
-						watchlist: [],
-					});
-				}
-			} else {
-				setWatchlist([]);
-			}
-			setIsLoading(false);
-		});
-		return () => unsubscribe();
+		const controller = new AbortController();
+		browserRuntime.runFork(
+			Effect.gen(function* () {
+				const auth = yield* AuthService;
+				const store = yield* UserStore;
+				yield* auth.changes.pipe(
+					Stream.runForEach(
+						Effect.fnUntraced(function* (currentUser) {
+							setUser(currentUser);
+							const list = currentUser
+								? yield* store
+										.loadOrCreate(currentUser.uid, currentUser.displayName)
+										.pipe(
+											Effect.catchTag("FirebaseError", (error) =>
+												Effect.logError("Failed to load watchlist", error).pipe(
+													Effect.as([] as ReadonlyArray<WatchItem>),
+												),
+											),
+										)
+								: [];
+							setWatchlist([...list]);
+							setIsLoading(false);
+						}),
+					),
+				);
+			}),
+			{ signal: controller.signal },
+		);
+		return () => controller.abort();
 	}, []);
 
 	return (

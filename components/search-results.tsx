@@ -1,11 +1,18 @@
 import Pagination from "@/components/pagination";
 import PosterCard from "@/components/cards/poster-card";
 import genreData from "@/lib/genreData";
-import { fetchTMDBData } from "@/lib/requests";
+import type { ItemType } from "@/types";
+import type { TmdbItem } from "@/lib/effect/schemas";
+import { runServerOrNull } from "@/lib/effect/runtime";
+import { TmdbList } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
 import noItem from "@/public/no-item.png";
 import { Suspense } from "react";
 
-function buildPosterImage(posterPath?: string, backdropPath?: string) {
+function buildPosterImage(
+	posterPath?: string | null,
+	backdropPath?: string | null,
+) {
 	if (posterPath) return `https://image.tmdb.org/t/p/w342${posterPath}`;
 	if (backdropPath) return `https://image.tmdb.org/t/p/w300${backdropPath}`;
 	return noItem;
@@ -28,14 +35,14 @@ export default async function SearchResults(props: propsType) {
 		const tmdbPage1 = props.page * 2 - 1;
 		const tmdbPage2 = props.page * 2;
 		const [data1, data2] = await Promise.all([
-			fetchTMDBData(`${baseUrl}&page=${tmdbPage1}`),
-			fetchTMDBData(`${baseUrl}&page=${tmdbPage2}`),
+			runServerOrNull(tmdbGet(`${baseUrl}&page=${tmdbPage1}`, TmdbList)),
+			runServerOrNull(tmdbGet(`${baseUrl}&page=${tmdbPage2}`, TmdbList)),
 		]);
 
 		const results = [
 			...(data1?.results ?? []),
 			...(data2?.results ?? []),
-		].filter((item: any) => !item.adult);
+		].filter((item) => !item.adult);
 		const totalPages = Math.ceil((data1?.total_pages ?? 1) / 2);
 		const totalResults: number = data1?.total_results ?? 0;
 
@@ -59,12 +66,12 @@ export default async function SearchResults(props: propsType) {
 				) : (
 					<>
 						<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
-							{results.map((item: any) => (
+							{results.map((item) => (
 								<PosterCard
 									key={item.id}
 									className="w-full"
 									id={item.id}
-									title={item.title || item.name}
+									title={item.title || item.name || ""}
 									type={item.first_air_date ? "tv" : "movie"}
 									image={buildPosterImage(item.poster_path, item.backdrop_path)}
 								/>
@@ -83,17 +90,21 @@ export default async function SearchResults(props: propsType) {
 
 	// Regular search: fetch movie + TV in parallel, interleave all results
 	const [movieData, tvData] = await Promise.all([
-		fetchTMDBData(`search/movie?query=${q}&page=${props.page}`),
-		fetchTMDBData(`search/tv?query=${q}&page=${props.page}`),
+		runServerOrNull(
+			tmdbGet(`search/movie?query=${q}&page=${props.page}`, TmdbList),
+		),
+		runServerOrNull(
+			tmdbGet(`search/tv?query=${q}&page=${props.page}`, TmdbList),
+		),
 	]);
 
-	const movies: any[] = (movieData?.results ?? []).filter((item: any) => !item.adult);
-	const shows: any[] = tvData?.results ?? [];
-	const interleaved: any[] = [];
+	const movies = (movieData?.results ?? []).filter((item) => !item.adult);
+	const shows = tvData?.results ?? [];
+	const interleaved: (TmdbItem & { media_type: ItemType })[] = [];
 	const maxLen = Math.max(movies.length, shows.length);
 	for (let i = 0; i < maxLen; i++) {
-		if (i < movies.length) interleaved.push({ ...movies[i], media_type: "movie" });
-		if (i < shows.length) interleaved.push({ ...shows[i], media_type: "tv" });
+		if (i < movies.length) interleaved.push({ ...movies[i], media_type: "movie" as const });
+		if (i < shows.length) interleaved.push({ ...shows[i], media_type: "tv" as const });
 	}
 	const results = interleaved.slice(0, 20);
 
@@ -124,12 +135,12 @@ export default async function SearchResults(props: propsType) {
 			) : (
 				<>
 					<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
-						{results.map((item: any) => (
+						{results.map((item) => (
 							<PosterCard
 								key={`${item.media_type}-${item.id}`}
 								className="w-full"
 								id={item.id}
-								title={item.title || item.name}
+								title={item.title || item.name || ""}
 								type={item.media_type}
 								image={buildPosterImage(item.poster_path, item.backdrop_path)}
 							/>

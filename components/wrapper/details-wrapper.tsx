@@ -1,12 +1,13 @@
-import { fetchTMDBData } from "@/lib/requests";
+import { runServerOrNull } from "@/lib/effect/runtime";
+import { TmdbCredits, TmdbVideos } from "@/lib/effect/schemas";
+import { tmdbGet } from "@/lib/effect/tmdb";
 import CardGallery from "../gallery/card-gallery";
 
 async function getData(itemType: string, itemId: string) {
-	const promises = [
-		fetchTMDBData(`${itemType}/${itemId}/videos`),
-		fetchTMDBData(`${itemType}/${itemId}/credits`),
-	];
-	const [videos, credits] = await Promise.all(promises);
+	const [videos, credits] = await Promise.all([
+		runServerOrNull(tmdbGet(`${itemType}/${itemId}/videos`, TmdbVideos)),
+		runServerOrNull(tmdbGet(`${itemType}/${itemId}/credits`, TmdbCredits)),
+	]);
 	return { videos, credits };
 }
 

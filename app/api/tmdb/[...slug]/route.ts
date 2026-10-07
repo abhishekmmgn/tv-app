@@ -1,73 +1,59 @@
-function secondsUntilEndOfDay(): number {
-  const now = new Date();
-  const midnight = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
-    0, 0, 0, 0,
-  );
-  return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+import { Effect, Schema } from "effect"
+import type { TmdbError } from "@/lib/effect/errors"
+import { serverRuntime } from "@/lib/effect/runtime"
+import { secondsUntilEndOfDay, TmdbClient } from "@/lib/effect/tmdb"
+
+const statusOf = (error: TmdbError): number => {
+	switch (error._tag) {
+		case "TmdbNotFound":
+			return 404
+		case "TmdbUnauthorized":
+			return 401
+		case "TmdbHttpError":
+			return error.status
+		default:
+			return 500
+	}
 }
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ slug: string[] }> },
+	request: Request,
+	{ params }: { params: Promise<{ slug: string[] }> },
 ) {
-  const { slug } = await params;
-  const endpoint = slug.join("/");
+	const { slug } = await params
+	const path = slug.join("/")
 
-  // Forward query string parameters from the incoming request
-  const { searchParams } = new URL(request.url);
-  if (endpoint.includes("search/") || endpoint.includes("discover/")) {
-    if (!searchParams.has("include_adult")) {
-      searchParams.set("include_adult", "false");
-    }
-  }
-  const queryString = searchParams.toString();
-  const fullEndpoint = queryString ? `${endpoint}?${queryString}` : endpoint;
+	// Forward query string parameters from the incoming request
+	const query = new URL(request.url).searchParams.toString()
+	const endpoint = query ? `${path}?${query}` : path
+	const ttl = secondsUntilEndOfDay()
 
-  try {
-    const token =
-      process.env.TMDB_AUTH_TOKEN || process.env.NEXT_PUBLIC_TMDB_AUTH_TOKEN;
+	const program = Effect.gen(function* () {
+		const tmdb = yield* TmdbClient
+		return yield* tmdb.get(endpoint, Schema.Unknown, { revalidate: ttl })
+	}).pipe(
+		Effect.match({
+			onSuccess: (data) =>
+				Response.json(data, {
+					headers: {
+						"Cache-Control": `public, s-maxage=${ttl}, stale-while-revalidate=86400`,
+					},
+				}),
+			onFailure: (error) => {
+				console.error("TMDB proxy error:", error._tag, error.endpoint)
+				return Response.json(
+					{ error: `TMDB API error: ${error._tag}` },
+					{ status: statusOf(error) },
+				)
+			},
+		}),
+	)
 
-    if (!token) {
-      return Response.json(
-        { error: "TMDB token not configured" },
-        { status: 500 },
-      );
-    }
-
-    const ttl = secondsUntilEndOfDay();
-
-    const response = await fetch(
-      `https://api.themoviedb.org/3/${fullEndpoint}`,
-      {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        next: { revalidate: ttl },
-      },
-    );
-
-    if (!response.ok) {
-      return Response.json(
-        { error: `TMDB API error: ${response.status}` },
-        { status: response.status },
-      );
-    }
-
-    const data = await response.json();
-    return Response.json(data, {
-      headers: {
-        "Cache-Control": `public, s-maxage=${ttl}, stale-while-revalidate=86400`,
-      },
-    });
-  } catch (error) {
-    console.error("TMDB proxy error:", error);
-    return Response.json(
-      { error: "Failed to fetch from TMDB" },
-      { status: 500 },
-    );
-  }
+	try {
+		return await serverRuntime.runPromise(program)
+	} catch (error) {
+		// Layer construction fails (e.g. TMDB token missing) before a request is made
+		console.error("TMDB proxy failure:", error)
+		return Response.json({ error: "TMDB is not configured" }, { status: 500 })
+	}
 }

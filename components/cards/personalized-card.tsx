@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { SplashImage } from "@/lib/usePerfectImage";
-import { generateLink } from "@/lib/utils";
+import { generateLink, mediaTypeOf } from "@/lib/utils";
 import type { DataListType } from "@/types";
 import Link from "next/link";
 
 export default function PersonalizedCard({ data }: { data: DataListType }) {
 	const name = data?.name || data?.title;
-	const link = generateLink(data.media_type, name as string, data.id);
+	const link = generateLink(mediaTypeOf(data), name as string, data.id);
 	return (
 		<div className="relative w-full aspect-9/16 max-h-[90vh] sm:aspect-video bg-secondary rounded-md animate-fade-in-stagger">
 			<div className="animate-fade-in">
